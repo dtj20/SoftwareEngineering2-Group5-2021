@@ -64,8 +64,8 @@ public class NewBank {
 			Account payerAccount = payer.findAccount(payerName);
 			Account receiverAccount = receiver.findAccount(receiverName);
 
-			payerAccount.newTransaction(- Double.parseDouble(amount));
-			receiverAccount.newTransaction(+ Double.parseDouble(amount));
+			payerAccount.balance -= Double.parseDouble(amount);
+			receiverAccount.balance += Double.parseDouble(amount);
 
 			return "SUCCESS";
 		} else {

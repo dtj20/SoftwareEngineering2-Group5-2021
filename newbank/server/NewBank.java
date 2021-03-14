@@ -42,6 +42,10 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 			switch(request) {
 			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
+			case "NEWACCOUNT Savings" : return customers.get(customer.getKey())
+					.addAccount(new Account("Savings",0.0));
+			case "NEWACCOUNT Checking" : return customers.get(customer.getKey())
+					.addAccount(new Account("Checking",0.0));
 			default : return "FAIL";
 			}
 		}

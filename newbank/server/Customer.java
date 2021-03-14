@@ -13,12 +13,17 @@ public class Customer {
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {
-			s += a.toString();
+			s += a.toString() + "\n";
 		}
 		return s;
 	}
 
-	public void addAccount(Account account) {
-		accounts.add(account);		
+	public String addAccount(Account account) {
+		try {accounts.add(account);
+			return "SUCCESS";
+		}
+		catch(Exception e) {
+			return "FAIL";
+		}
 	}
 }

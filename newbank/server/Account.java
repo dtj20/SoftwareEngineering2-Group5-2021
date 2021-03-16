@@ -24,5 +24,4 @@ public class Account {
 		return balance;
 	}
 
-	public double getBalance() { return balance;}
 }

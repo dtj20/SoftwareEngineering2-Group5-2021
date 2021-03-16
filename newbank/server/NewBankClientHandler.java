@@ -11,6 +11,8 @@ public class NewBankClientHandler extends Thread{
 	private NewBank bank;
 	private BufferedReader in;
 	private PrintWriter out;
+    public String[] loginArray;
+    public boolean loginSuccess = false;
 
 
 	public NewBankClientHandler(Socket s) throws IOException {
@@ -22,27 +24,32 @@ public class NewBankClientHandler extends Thread{
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
-			// ask for user name
-			out.println("Enter Username");
-			String userName = in.readLine();
-			// ask for password
-			out.println("Enter Password");
-			String password = in.readLine();
-			out.println("Checking Details...");
-			// authenticate user and get customer ID token from bank for use in subsequent requests
-			CustomerID customer = bank.checkLogInDetails(userName, password);
-			// if the user is authenticated then get requests from the user and process them
-			if(customer != null) {
-				out.println("Log In Successful. What do you want to do?");
-				while(true) {
-					String request = in.readLine();
-					System.out.println("Request from " + customer.getKey());
-					String responce = bank.processRequest(customer, request);
-					out.println(responce);
+			while(loginSuccess !=true) {
+				// ask for user name
+				out.println("Enter Username"); //OMAR: method should authenticate username first and then password
+				String username = in.readLine();
+				//loginArray[0] = userName;
+				// ask for password
+				out.println("Enter Password");
+				String password = in.readLine();
+				//loginArray[1] = password;
+				out.println("Checking Details...");
+				// authenticate user and get customer ID token from bank for use in subsequent requests
+				CustomerID customer = bank.checkLogInDetails(username, password);
+
+				// if the user is authenticated then get requests from the user and process them
+				if (customer != null) {
+					out.println("Log In Successful. What do you want to do?");
+					while (true) {
+						String request = in.readLine();
+						System.out.println("Request from " + customer.getKey());
+						String response = bank.processRequest(customer, request); //was responce, changed to response
+						out.println(response);
+						loginSuccess = true;
+					}
+				} else {
+					out.println("Log In Failed");
 				}
-			}
-			else {
-				out.println("Log In Failed");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

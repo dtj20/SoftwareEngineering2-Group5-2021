@@ -1,2 +1,2 @@
-java newbank.server.ExampleClient
+java newbank.client.ExampleClient
 pause

@@ -7,9 +7,11 @@ public class Customer {
 
 	private String accountName;
 	private ArrayList<Account> accounts;
+    private String password;
 	private static List<Customer> allCustomers = new ArrayList<>();
-	
-	public Customer() {
+
+	public Customer(String password) {
+		this.password = password;
 		accounts = new ArrayList<>();
 	}
 	
@@ -43,11 +45,20 @@ public class Customer {
 	 * Method to find an account based on the accountName provided.
 	 */
 	public Account findAccount(String accountName) {
-		for (Account account : accounts) {
-			if (account.getName().equals(accountName)) {
-				return account;
-			}
-		}
-		return null;
+        for (Account account : accounts) {
+            if (account.getName().equals(accountName)) {
+                return account;
+            }
+        }
+        return null;
+    }
+
+	public ArrayList<Account> getAccounts(){
+	    return accounts;
 	}
+
+	public String getPassword(){
+	    return password;
+	}
+
 }

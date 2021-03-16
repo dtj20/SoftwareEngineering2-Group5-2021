@@ -12,7 +12,7 @@ public class TestAccount {
     @Test
     public void testAccountCreation() {
         String Name = "Test Account";
-        int Balance = 1500;
+        double Balance = 1500;
         Account acc = new Account(Name, Balance );
         assertEquals(Name, acc.getName());
         assertTrue(Balance == acc.getBalance());
@@ -21,10 +21,10 @@ public class TestAccount {
     @Test
     public void testToString() {
         String name = "name";
-        int balance = 1500;
+        double balance = 1500;
         String expected =  name + ": " + balance;
         Account acc = new Account(name, balance);
-        assertEquals(expected, acc.toString());
+        assertTrue(expected.equals(acc.toString()));
     }
 
 

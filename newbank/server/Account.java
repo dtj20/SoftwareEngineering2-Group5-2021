@@ -4,7 +4,7 @@ public class Account {
 	
 	private String accountName;
 	private double openingBalance;
-	private double balance;
+	public double balance;
 
 	public Account(String accountName, double openingBalance) {
 		this.accountName = accountName;
@@ -13,7 +13,15 @@ public class Account {
 	}
 	
 	public String toString() {
-		return (accountName + ": " + openingBalance);
+		return (accountName + ": " + balance);
+	}
+
+	public String getName(){
+		return accountName;
+	}
+
+	public double getBalance() {
+		return balance;
 	}
 
 	public double getBalance() { return balance;}

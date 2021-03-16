@@ -56,4 +56,25 @@ public class NewBank {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
 
+	/*
+	 * Pay method.
+	 */
+	private String pay(CustomerID customer, String amount, String payerName, String receiverName) {
+
+		if (Customer.isCustomer(payerName) && Customer.isCustomer(receiverName)) {
+			Customer payer = customers.get(customer.getKey());
+			Customer receiver = customers.get(receiverName);
+
+			Account payerAccount = payer.findAccount(payerName);
+			Account receiverAccount = receiver.findAccount(receiverName);
+
+			payerAccount.balance -= Double.parseDouble(amount);
+			receiverAccount.balance += Double.parseDouble(amount);
+
+			return "SUCCESS";
+		} else {
+			return "FAIL";
+		}
+	}
+
 }

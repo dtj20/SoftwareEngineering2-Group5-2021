@@ -1,10 +1,13 @@
 package newbank.server;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Customer {
-	
+
+	private String accountName;
 	private ArrayList<Account> accounts;
+	private static List<Customer> allCustomers = new ArrayList<>();
 	
 	public Customer() {
 		accounts = new ArrayList<>();
@@ -25,5 +28,26 @@ public class Customer {
 		catch(Exception e) {
 			return "FAIL";
 		}
+	}
+
+
+	/*
+	 * Method to check whether a accountName already exists
+	 */
+	public static boolean isCustomer(String accountName) {
+
+		return Customer.allCustomers.stream().anyMatch(customer -> customer.accountName.equals(accountName));
+	}
+
+	/*
+	 * Method to find an account based on the accountName provided.
+	 */
+	public Account findAccount(String accountName) {
+		for (Account account : accounts) {
+			if (account.getName().equals(accountName)) {
+				return account;
+			}
+		}
+		return null;
 	}
 }

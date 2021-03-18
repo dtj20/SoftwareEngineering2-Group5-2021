@@ -8,11 +8,13 @@ public class Customer {
 	private String accountName;
 	private ArrayList<Account> accounts;
     private String password;
-	private static List<Customer> allCustomers = new ArrayList<>();
+	private static List<Customer> allCustomers;
 
-	public Customer(String password) {
+	public Customer(String accountName, String password) {
+		this.accountName = accountName;
 		this.password = password;
-		accounts = new ArrayList<>();
+		this.accounts = new ArrayList<>();
+		this.allCustomers = new ArrayList<>();
 	}
 	
 	public String accountsToString() {
@@ -57,8 +59,21 @@ public class Customer {
 	    return accounts;
 	}
 
+	public void setPassword(String password){
+		this.password = password;
+	}
+
 	public String getPassword(){
 	    return password;
+	}
+
+	public Boolean changePassword(CustomerID customer, String password){
+		if(password.length()>=6){
+			this.password = password;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

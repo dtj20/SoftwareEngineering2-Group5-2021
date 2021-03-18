@@ -79,4 +79,15 @@ public class NewBank {
 		}
 	}
 
+	/*
+	 * Method to change customer's password
+	 */
+	private String changePassword(CustomerID customer, String password) {
+		if(customers.get(customer.getKey()).changePassword(customer, password)){
+			return "SUCCESS. Password successfully changed";
+		} else{
+			return "FAIL. Password length should be at least 6";
+		}
+	}
+
 }

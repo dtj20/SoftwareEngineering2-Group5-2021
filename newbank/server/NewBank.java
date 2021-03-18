@@ -84,9 +84,13 @@ public class NewBank {
 	 */
 	private String changePassword(CustomerID customer, String password) {
 		if(customers.get(customer.getKey()).changePassword(customer, password)){
-			return "SUCCESS. Password successfully changed";
+			return "SUCCESS. Password successfully changed.";
 		} else{
-			return "FAIL. Password length should be at least 6";
+			return "FAIL. Please enter a strong password that has at least one digit, " +
+					"one lowercase character, " +
+					"one uppercase character, " +
+					"one special character " +
+					"and a length of at least 8 characters and a maximum of 20 characters";
 		}
 	}
 

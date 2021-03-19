@@ -24,7 +24,7 @@ public class NewBankClientHandler extends Thread{
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
-			while(loginSuccess !=true) {
+			while(loginSuccess) {
 				// ask for user name
 				out.println("Enter Username"); //OMAR: method should authenticate username first and then password
 				String username = in.readLine();
@@ -40,17 +40,25 @@ public class NewBankClientHandler extends Thread{
 				// if the user is authenticated then get requests from the user and process them
 				if (customer != null) {
 					out.println("Log In Successful.");
-					while (true) {
+					boolean loop = true;
+					while (loop) {
 						out.println("Enter a number to choose from the following options. \n1: Show My accounts. " +
 								"\n2: create a new savings account. \n3: create a new checking account. " +
 								"\n4: move money between your accounts \n5: Pay another person\n8: help. \n9: logout\n");
 						String request = in.readLine();
-						System.out.println("Request from " + customer.getKey());
-						String response = bank.processRequest(customer, request); //was responce, changed to response
-						out.println(response);
-						loginSuccess = true;
-						out.println("Press Enter to continue or 9 to logout");
-						in.readLine();
+						if(request.equals("9")) {
+							loop = false;
+						} else {
+							System.out.println("Request from " + customer.getKey());
+							String response = bank.processRequest(customer, request); //was responce, changed to response
+							out.println(response);
+							loginSuccess = true;
+							out.println("Press Enter to continue or 9 to logout");
+
+							if(in.readLine().equals("9")) {
+								loop = false;
+							}
+						}
 					}
 				} else {
 					out.println("Log In Failed");

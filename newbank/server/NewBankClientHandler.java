@@ -16,9 +16,9 @@ public class NewBankClientHandler extends Thread{
 
 
 	public NewBankClientHandler(Socket s) throws IOException {
-		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		out = new PrintWriter(s.getOutputStream(), true);
+		bank = NewBank.getBank(in, out);
 	}
 
 	public void run() {
@@ -39,13 +39,18 @@ public class NewBankClientHandler extends Thread{
 
 				// if the user is authenticated then get requests from the user and process them
 				if (customer != null) {
-					out.println("Log In Successful. What do you want to do?");
+					out.println("Log In Successful.");
 					while (true) {
+						out.println("Enter a number to choose from the following options. \n1: Show My accounts. " +
+								"\n2: create a new savings account. \n3: create a new checking account. " +
+								"\n4: move money between your accounts \n5: Pay another person\n8: help. \n9: logout\n");
 						String request = in.readLine();
 						System.out.println("Request from " + customer.getKey());
 						String response = bank.processRequest(customer, request); //was responce, changed to response
 						out.println(response);
 						loginSuccess = true;
+						out.println("Press Enter to continue or 9 to logout");
+						in.readLine();
 					}
 				} else {
 					out.println("Log In Failed");

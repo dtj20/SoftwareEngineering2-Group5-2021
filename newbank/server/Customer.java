@@ -23,12 +23,12 @@ public class Customer {
 		return s;
 	}
 
-	public String addAccount(Account account) {
+	public boolean addAccount(Account account) {
 		try {accounts.add(account);
-			return "SUCCESS";
+			return true;
 		}
 		catch(Exception e) {
-			return "FAIL";
+			return false;
 		}
 	}
 

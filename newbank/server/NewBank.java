@@ -3,36 +3,37 @@ package newbank.server;
 import java.util.HashMap;
 
 public class NewBank {
-	
+
 	private static final NewBank bank = new NewBank();
-	private HashMap<String,Customer> customers;
+	private final HashMap<String, Customer> customers;
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
-	
+
 	private void addTestData() {
 		Customer bhagy = new Customer("123");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("Bhagy", bhagy);
-		
+
 		Customer christina = new Customer("456");
-		christina.addAccount(new Account("Savings" ,1500.0));
+		christina.addAccount(new Account("Savings", 1500.0));
 		customers.put("Christina", christina);
-		
+
 		Customer john = new Customer("789");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("John", john);
 	}
-	
+
 	public static NewBank getBank() {
 		return bank;
 	}
-	
+
 	public synchronized CustomerID checkLogInDetails(String username, String password) {
-		if(customers.containsKey(username)) {
-		    if(customers.get(username).getPassword().equals(password)){
-                return new CustomerID(username);
+		if (customers.containsKey(username)) {
+			if (customers.get(username).getPassword().equals(password)) {
+				return new CustomerID(username);
 			}
 		}
 
@@ -41,19 +42,19 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
-		if(customers.containsKey(customer.getKey())) {
-			switch(request) {
-			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
-			case "NEWACCOUNT Savings" : return customers.get(customer.getKey())
-					.addAccount(new Account("Savings",0.0));
-			case "NEWACCOUNT Checking" : return customers.get(customer.getKey())
-					.addAccount(new Account("Checking",0.0));
-			default : return "FAIL";
-			}
+		if (customers.containsKey(customer.getKey())) {
+			return switch (request) {
+				case "SHOWMYACCOUNTS" -> showMyAccounts(customer);
+				case "NEWACCOUNT Savings" -> customers.get(customer.getKey())
+						.addAccount(new Account("Savings", 0.0));
+				case "NEWACCOUNT Checking" -> customers.get(customer.getKey())
+						.addAccount(new Account("Checking", 0.0));
+				default -> "FAIL";
+			};
 		}
 		return "FAIL";
 	}
-	
+
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
@@ -77,6 +78,51 @@ public class NewBank {
 		} else {
 			return "FAIL";
 		}
+	}
+
+	//recognises accounts to move funds around
+	private void findAccounts ()
+	{
+		System.out.println("The following accounts are available: \n");
+		System.out.println(bhagy.addAccount);
+		System.out.println();
+		System.out.println(christina.addAccount);
+		System.out.println();
+		System.out.println(john.addAccount);
+		System.out.println();
+
+		System.out.println("\nWhich account would you like to transfer funds to?");
+		System.out.println("1. " + bhagy.addAccount);
+		System.out.println("2. " + christina.addAccount);
+		System.out.println("3. " + john.addAccount);
+
+		input = scan.nextInt();
+	}
+
+	//recognises accounts where to move funds around
+
+	private String transferFunds(double amount)
+	{
+		if (amount < getBalance) //withdraw value does not exceed balance
+		{
+			getBalance = getBalance - amount;
+			return "SUCCESS";
+		} else {
+			System.out.println();
+			System.out.println("Error: Insufficient funds.");
+			System.out.println("Account: " + getBalance);
+			System.out.println("Requested: " + amount);
+			System.out.println("Available: " + getBalance);
+			return "FAIL";
+		}
+	}
+
+	//MOVE method
+
+	public static void move(double amount, String sourceAccount, String targetAccount)
+	{
+		sourceAccount.transferFunds (amount);
+		targetAccount.transferFunds (amount);
 	}
 
 }

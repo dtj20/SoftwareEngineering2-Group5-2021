@@ -24,7 +24,8 @@ public class Customer {
 	}
 
 	public boolean addAccount(Account account) {
-		try {accounts.add(account);
+		try {
+		    accounts.add(account);
 			return true;
 		}
 		catch(Exception e) {

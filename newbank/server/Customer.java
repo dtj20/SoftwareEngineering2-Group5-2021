@@ -24,7 +24,8 @@ public class Customer {
 	}
 
 	public String addAccount(Account account) {
-		try {accounts.add(account);
+		try {
+			accounts.add(account);
 			return "SUCCESS";
 		}
 		catch(Exception e) {

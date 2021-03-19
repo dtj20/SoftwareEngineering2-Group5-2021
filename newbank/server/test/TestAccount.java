@@ -1,10 +1,15 @@
 package newbank.server.test;
 
 import newbank.server.Account;
+import org.junit.Test;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 
 public class TestAccount {
@@ -13,8 +18,22 @@ public class TestAccount {
     public void testAccountCreation() {
         String Name = "Test Account";
         double Balance = 1500;
-        Account acc = new Account(Name, Balance );
+        int sort = 203045;
+        int account = 12345678;
+        String IBAN = "GB" + account + "1010";
+        String cr;
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        Date created = Calendar.getInstance().getTime();
+        cr = dateFormat.format(created);
+
+
+        Account acc = new Account(Name, Balance);
         assertEquals(Name, acc.getName());
+        assertEquals(sort, acc.getSort());
+        assertEquals(IBAN.length(), acc.getIBAN().length());
+        assertEquals((int) (Math.log10(account) + 1), (int) (Math.log10(acc.getAccountNumber()) + 1));
+        assertEquals(cr, acc.getCreated());
         assertTrue(Balance == acc.getBalance());
     }
 

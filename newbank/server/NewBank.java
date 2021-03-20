@@ -150,16 +150,22 @@ public class NewBank {
 		return "";
 	}
 
-	private boolean newCustomer(){
-		String accountName = menuResponseBuilder("Please enter the first name of the account holder");
+	public boolean newCustomer(){
+		String customerName = menuResponseBuilder("Please enter the first name of the new customer");
 		String accountPassword = menuResponseBuilder("Please enter a password"); //Use Sifan's password generator code
-		Customer newCustomer = new Customer(accountPassword);
-//default is to create main account for new customer
-		//create new method creating new account
-		//add logic to NewBankclient handler so that a user can either login or register as a new customer
-		bhagy.addAccount(new Account("Main", 1000.0));
-		customers.put("Bhagy", bhagy);
-		return true;
+		Customer newCustomer = new Customer(customerName,accountPassword);
+
+		//default is to create main account for new customer
+		newAccount(newCustomer, "Main", 5.00);
+		customers.put(customerName, newCustomer);
+		//add logic to NewBankClient handler so that a user can either login or register as a new customer
+		if (customers.containsKey(customerName)){return true;}
+		else { return false;}
 	}
 
+	//create new method creating new account for an existing customer
+	public void newAccount(Customer customer, String accountName, Double openingBalance){
+			customer.addAccount(new Account(accountName, openingBalance));
+
+	}
 }

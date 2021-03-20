@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Locale;
 
 public class NewBankClientHandler extends Thread{
 
@@ -25,17 +26,24 @@ public class NewBankClientHandler extends Thread{
 		// keep getting requests from the client and processing them
 		try {
 			while(loginSuccess !=true) {
-				// ask for user name
-				out.println("Enter Username"); //OMAR: method should authenticate username first and then password
-				String username = in.readLine();
-				//loginArray[0] = userName;
-				// ask for password
-				out.println("Enter Password");
-				String password = in.readLine();
-				//loginArray[1] = password;
-				out.println("Checking Details...");
-				// authenticate user and get customer ID token from bank for use in subsequent requests
-				CustomerID customer = bank.checkLogInDetails(username, password);
+				out.println("Would you like to LOGIN or REGISTER");
+				String userChoice = in.readLine().toLowerCase();
+				if (userChoice.equals("register")){
+					if(bank.newCustomer()){}
+					out.println("SUCCESS! We've created you a main account and added £5 as a thank you for choosing New Bank." +
+							" Login to access your account");
+				}else if(userChoice.equals("login")) {
+					// ask for user name
+					out.println("Enter Username"); //OMAR: method should authenticate username first and then password
+					String username = in.readLine();
+					//loginArray[0] = userName;
+					// ask for password
+					out.println("Enter Password");
+					String password = in.readLine();
+					//loginArray[1] = password;
+					out.println("Checking Details...");
+					// authenticate user and get customer ID token from bank for use in subsequent requests
+					CustomerID customer = bank.checkLogInDetails(username, password);
 
 				// if the user is authenticated then get requests from the user and process them
 				if (customer != null) {
@@ -54,6 +62,7 @@ public class NewBankClientHandler extends Thread{
 					}
 				} else {
 					out.println("Log In Failed");
+				}
 				}
 			}
 		} catch (IOException e) {

@@ -49,7 +49,7 @@ public class TestAccount {
 
     @Test
     public void testCloseAccount(){
-        Customer bhagy = new Customer("123");
+        Customer bhagy = new Customer("Bhagy","123");
         bhagy.addAccount(new Account("Main", 1000.0));
         Account account = bhagy.findAccount("Main");
         int accountNumber = account.getAccountNumber();

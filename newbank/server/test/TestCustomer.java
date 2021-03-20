@@ -9,14 +9,14 @@ public class TestCustomer {
 
     @Test
     public void testCustomerAccounts() {
-        Customer c = new Customer("1234");
+        Customer c = new Customer("John","1234");
         String empty = "";
         assertEquals("Customer is not empty", empty, c.accountsToString());
     }
 
     @Test
     public void testCustomerAddAccount() {
-        Customer c = new Customer("1234");
+        Customer c = new Customer("John","1234");
         String empty = "";
         Account acc = new Account("name", 1500);
         c.addAccount(acc);
@@ -25,7 +25,7 @@ public class TestCustomer {
 
     @Test
     public void testFindAccount() {
-        Customer c = new Customer("1234");
+        Customer c = new Customer("John","1234");
         Account acc = new Account("name", 1500);
         c.addAccount(acc);
         Account test = c.findAccount("name");
@@ -34,8 +34,9 @@ public class TestCustomer {
 
     @Test
     public void testPasswordSet() {
+        String name = "John";
         String password = "1234";
-        Customer c = new Customer(password);
+        Customer c = new Customer(name, password);
         assertEquals("passwords do not match", c.getPassword(), password);
     }
 

@@ -151,8 +151,23 @@ public class NewBank {
 	}
 
 	public boolean newCustomer(){
+		boolean validPassword = false;
+		String accountPassword = null;
 		String customerName = menuResponseBuilder("Please enter the first name of the new customer");
-		String accountPassword = menuResponseBuilder("Please enter a password"); //Use Sifan's password generator code
+		while (!validPassword) {
+			accountPassword = menuResponseBuilder("Please enter your password.\n" +
+					"							Password must contain at least one digit [0-9].\n" +
+					"                             at least one lowercase Latin character [a-z].\n" +
+					"                             at least one uppercase Latin character [A-Z].\n" +
+					"                             at least one special character like ! @ # & ( ).\n" +
+					"                             a length of at least 8 characters and a maximum of 20 characters.");
+
+			if (Customer.isValid(accountPassword)) {
+                validPassword = true;
+			} else{
+				out.println("Password is too weak. Try something else.");
+			}
+		}
 		Customer newCustomer = new Customer(customerName,accountPassword);
 
 		//default is to create main account for new customer

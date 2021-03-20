@@ -135,4 +135,16 @@ public class NewBank {
 		return "";
 	}
 
+	private boolean newCustomer(){
+		String accountName = menuResponseBuilder("Please enter the first name of the account holder");
+		String accountPassword = menuResponseBuilder("Please enter a password"); //Use Sifan's password generator code
+		Customer newCustomer = new Customer(accountPassword);
+//default is to create main account for new customer
+		//create new method creating new account
+		//add logic to NewBankclient handler so that a user can either login or register as a new customer
+		bhagy.addAccount(new Account("Main", 1000.0));
+		customers.put("Bhagy", bhagy);
+		return true;
+	}
+
 }

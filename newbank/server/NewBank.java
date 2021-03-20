@@ -16,15 +16,15 @@ public class NewBank {
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer("123");
+		Customer bhagy = new Customer("Bhagy","123");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("Bhagy", bhagy);
 		
-		Customer christina = new Customer("456");
+		Customer christina = new Customer("Christina","456");
 		christina.addAccount(new Account("Savings" ,1500.0));
 		customers.put("Christina", christina);
 		
-		Customer john = new Customer("789");
+		Customer john = new Customer("John","789");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("John", john);
 	}
@@ -42,7 +42,7 @@ public class NewBank {
 	private void setIn(BufferedReader in) {
 		this.in = in;
 	}
-	
+
 	public synchronized CustomerID checkLogInDetails(String username, String password) {
 		if(customers.containsKey(username)) {
 		    if(customers.get(username).getPassword().equals(password)){
@@ -105,7 +105,7 @@ public class NewBank {
 			return "Error";
 		}
 	}
-	
+
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
@@ -128,6 +128,21 @@ public class NewBank {
 			return "SUCCESS";
 		} else {
 			return "FAIL";
+		}
+	}
+
+	/*
+	 * Method to change customer's password
+	 */
+	private String changePassword(CustomerID customer, String password) {
+		if(customers.get(customer.getKey()).changePassword(customer, password)){
+			return "SUCCESS. Password successfully changed.";
+		} else{
+			return "FAIL. Please enter a strong password that has at least one digit, " +
+					"one lowercase character, " +
+					"one uppercase character, " +
+					"one special character " +
+					"and a length of at least 8 characters and a maximum of 20 characters";
 		}
 	}
 

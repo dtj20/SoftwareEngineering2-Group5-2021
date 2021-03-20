@@ -1,6 +1,7 @@
 package newbank.server.test;
 
 import newbank.server.Account;
+import newbank.server.Customer;
 import org.junit.Test;
 
 import java.text.DateFormat;
@@ -46,6 +47,17 @@ public class TestAccount {
         assertTrue(expected.equals(acc.toString()));
     }
 
+    @Test
+    public void testCloseAccount(){
+        Customer bhagy = new Customer("123");
+        bhagy.addAccount(new Account("Main", 1000.0));
+        Account account = bhagy.findAccount("Main");
+        int accountNumber = account.getAccountNumber();
+        if (bhagy.getAccounts().isEmpty()!=true)
+            bhagy.closeAccount(accountNumber);
+        assertTrue(bhagy.getAccounts().isEmpty());
+
+    }
 
 
 }

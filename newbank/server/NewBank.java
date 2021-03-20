@@ -12,15 +12,15 @@ public class NewBank {
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer("123");
+		Customer bhagy = new Customer("Bhagy","123");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("Bhagy", bhagy);
 		
-		Customer christina = new Customer("456");
+		Customer christina = new Customer("Christina","456");
 		christina.addAccount(new Account("Savings" ,1500.0));
 		customers.put("Christina", christina);
 		
-		Customer john = new Customer("789");
+		Customer john = new Customer("John","789");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("John", john);
 	}

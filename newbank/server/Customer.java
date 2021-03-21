@@ -94,6 +94,8 @@ public class Customer {
 		}
 	}
 
+	//Check the username is *not* case sensitive
+
 	private static final String USERNAME_PATTERN =
 			"^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,25}[a-zA-Z0-9]$";
 
@@ -103,6 +105,8 @@ public class Customer {
 		Matcher caseUsername = usernamePattern.matcher(username);
 		return caseUsername.matches();
 	}
+
+	//alternative code version
 
 	/*
 	private static final Pattern usernamePattern = Pattern.compile(username, Pattern.CASE_INSENSITIVE);

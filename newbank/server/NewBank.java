@@ -179,7 +179,7 @@ public class NewBank {
 	public boolean newCustomer(){
 		boolean validPassword = false;
 		String accountPassword = null;
-		String customerName = menuResponseBuilder("Please enter the first name of the new customer");
+		String customerName = menuResponseBuilder("Please enter the first name of the new customer").toLowerCase();
 		while (!validPassword) {
 			accountPassword = menuResponseBuilder("Please enter your password.\n" +
 					"							Password must contain at least one digit [0-9].\n" +

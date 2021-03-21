@@ -11,6 +11,7 @@ public class Customer {
 	private String accountName;
 	private ArrayList<Account> accounts;
     private String password;
+    private String username;
 	private static List<Customer> allCustomers;
 
 	public Customer(String accountName, String password) {
@@ -43,7 +44,6 @@ public class Customer {
 	 * Method to check whether a accountName already exists
 	 */
 	public static boolean isCustomer(String accountName) {
-
 		return Customer.allCustomers.stream().anyMatch(customer -> customer.accountName.equals(accountName));
 	}
 
@@ -101,19 +101,18 @@ public class Customer {
 
 	private static final Pattern usernamePattern = Pattern.compile(USERNAME_PATTERN);
 
-	public static boolean caseInsensitiveUsername(final String username) {
-		Matcher caseUsername = usernamePattern.matcher(username);
+	public static boolean caseInsensitiveUsername(final String accountName) {
+		Matcher caseUsername = usernamePattern.matcher(accountName);
 		return caseUsername.matches();
 	}
 
 	//alternative code version
 
-	/*
-	private static final Pattern usernamePattern = Pattern.compile(username, Pattern.CASE_INSENSITIVE);
-
-	public static boolean caseInsensitiveUsername(final String username) {
-		Matcher match = usernamePattern.matcher(username);
-	}
-	*/
+//	private final Pattern usernamePattern = Pattern.compile(accountName, Pattern.CASE_INSENSITIVE);
+//
+//	public boolean caseInsensitiveUsername(final String accountName) {
+//		Matcher caseUsername = usernamePattern.matcher(accountName);
+//		return caseUsername.matches();
+//	}
 
 }

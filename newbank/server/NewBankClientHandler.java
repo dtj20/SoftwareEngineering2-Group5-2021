@@ -27,7 +27,7 @@ public class NewBankClientHandler extends Thread{
 			while(loginSuccess !=true) {
 				// ask for user name
 				out.println("Enter Username"); //OMAR: method should authenticate username first and then password
-				String username = in.readLine();
+				String username = in.readLine().toLowerCase();
 				//loginArray[0] = userName;
 				// ask for password
 				out.println("Enter Password");

@@ -5,18 +5,16 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 public class NewBank {
-
+	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
-	private double balance;
-
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
-
+	
 	private void addTestData() {
 		Customer bhagy = new Customer("bhagy","123");
 		bhagy.addAccount(new Account("Main", 1000.0));
@@ -30,7 +28,7 @@ public class NewBank {
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("john", john);
 	}
-
+	
 	public static NewBank getBank(BufferedReader in, PrintWriter out) {
 		bank.setOut(out);
 		bank.setIn(in);
@@ -178,5 +176,37 @@ public class NewBank {
 		}
 	}
 
+	public boolean newCustomer(){
+		boolean validPassword = false;
+		String accountPassword = null;
+		String customerName = menuResponseBuilder("Please enter the first name of the new customer");
+		while (!validPassword) {
+			accountPassword = menuResponseBuilder("Please enter your password.\n" +
+					"							Password must contain at least one digit [0-9].\n" +
+					"                             at least one lowercase Latin character [a-z].\n" +
+					"                             at least one uppercase Latin character [A-Z].\n" +
+					"                             at least one special character like ! @ # & ( ).\n" +
+					"                             a length of at least 8 characters and a maximum of 20 characters.");
 
+			if (Customer.isValid(accountPassword)) {
+                validPassword = true;
+			} else{
+				out.println("Password is too weak. Try something else.");
+			}
+		}
+		Customer newCustomer = new Customer(customerName,accountPassword);
+
+		//default is to create main account for new customer
+		newAccount(newCustomer, "Main", 5.00);
+		customers.put(customerName, newCustomer);
+		//add logic to NewBankClient handler so that a user can either login or register as a new customer
+		if (customers.containsKey(customerName)){return true;}
+		else { return false;}
+	}
+
+	//create new method creating new account for an existing customer
+	public void newAccount(Customer customer, String accountName, Double openingBalance){
+			customer.addAccount(new Account(accountName, openingBalance));
+
+	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Customer {
 
 	private String accountName;
@@ -92,5 +93,23 @@ public class Customer {
 			return false;
 		}
 	}
+
+	private static final String USERNAME_PATTERN =
+			"^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,25}[a-zA-Z0-9]$";
+
+	private static final Pattern usernamePattern = Pattern.compile(USERNAME_PATTERN);
+
+	public static boolean caseInsensitiveUsername(final String username) {
+		Matcher caseUsername = usernamePattern.matcher(username);
+		return caseUsername.matches();
+	}
+
+	/*
+	private static final Pattern usernamePattern = Pattern.compile(username, Pattern.CASE_INSENSITIVE);
+
+	public static boolean caseInsensitiveUsername(final String username) {
+		Matcher match = usernamePattern.matcher(username);
+	}
+	*/
 
 }

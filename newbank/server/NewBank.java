@@ -5,30 +5,32 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 public class NewBank {
-	
+
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+	private double balance;
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
-	
+
 	private void addTestData() {
-		Customer bhagy = new Customer("Bhagy","123");
+		Customer bhagy = new Customer("bhagy","123");
 		bhagy.addAccount(new Account("Main", 1000.0));
-		customers.put("Bhagy", bhagy);
-		
-		Customer christina = new Customer("Christina","456");
+		customers.put("bhagy", bhagy);
+
+		Customer christina = new Customer("christina","456");
 		christina.addAccount(new Account("Savings" ,1500.0));
-		customers.put("Christina", christina);
-		
-		Customer john = new Customer("John","789");
+		customers.put("christina", christina);
+
+		Customer john = new Customer("john","789");
 		john.addAccount(new Account("Checking", 250.0));
-		customers.put("John", john);
+		customers.put("john", john);
 	}
-	
+
 	public static NewBank getBank(BufferedReader in, PrintWriter out) {
 		bank.setOut(out);
 		bank.setIn(in);
@@ -77,7 +79,7 @@ public class NewBank {
 					double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
 					String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
 					String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
-					return move(amount, payerAccount, payeeAccount);
+					return move(customer, amount, payerAccount, payeeAccount);
 			} else if(request.equals("5")) {
 					String amount = menuResponseBuilder("Please specify an amount");
 					String payerName = menuResponseBuilder("Please specify a paying account");
@@ -146,8 +148,35 @@ public class NewBank {
 		}
 	}
 
-	private String move(double amount, String sourceAccount, String targetAccount) {
-		return "";
+	//Move funds across accounts
+
+	public String move(CustomerID customerName, double amount, String payerAccountName, String payeeAccountName)
+	{
+		try {
+
+			Customer customer = customers.get(customerName.getKey());
+
+			Account payerAccount = customer.findAccount(payerAccountName);
+
+			Account payeeAccount = customer.findAccount(payeeAccountName);
+
+			if (payerAccount.getBalance() >= amount) {
+
+				payerAccount.removeFunds(amount);
+				payeeAccount.addFunds(amount);
+
+				return "Funds successfully transferred.";
+			}
+			else {
+				return "Insufficient funds";
+			}
+
+		}
+		catch(Exception e)
+		{
+			return "Unable to find account.";
+		}
 	}
+
 
 }

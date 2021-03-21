@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Customer {
 
 	private String accountName;
 	private ArrayList<Account> accounts;
     private String password;
+    private String username;
 	private static List<Customer> allCustomers;
 
 	public Customer(String accountName, String password) {
@@ -37,12 +39,21 @@ public class Customer {
 		}
 	}
 
+	 public boolean closeAccount(int accountNumber) {
+		 for (Account account : accounts) {
+			 if (account.getAccountNumber() == accountNumber) {
+				 int index = accounts.indexOf(account);
+				 accounts.remove(index);
+				 return true;
+			 }
+		 }
+		 return false;
+	 }
 
 	/*
 	 * Method to check whether a accountName already exists
 	 */
 	public static boolean isCustomer(String accountName) {
-
 		return Customer.allCustomers.stream().anyMatch(customer -> customer.accountName.equals(accountName));
 	}
 
@@ -92,5 +103,26 @@ public class Customer {
 			return false;
 		}
 	}
+
+	//Check the username is *not* case sensitive
+
+	private static final String USERNAME_PATTERN =
+			"^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,25}[a-zA-Z0-9]$";
+
+	private static final Pattern usernamePattern = Pattern.compile(USERNAME_PATTERN);
+
+	public static boolean caseInsensitiveUsername(final String accountName) {
+		Matcher caseUsername = usernamePattern.matcher(accountName);
+		return caseUsername.matches();
+	}
+
+	//alternative code version
+
+//	private final Pattern usernamePattern = Pattern.compile(accountName, Pattern.CASE_INSENSITIVE);
+//
+//	public boolean caseInsensitiveUsername(final String accountName) {
+//		Matcher caseUsername = usernamePattern.matcher(accountName);
+//		return caseUsername.matches();
+//	}
 
 }

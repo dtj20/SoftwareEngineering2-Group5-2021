@@ -43,6 +43,10 @@ public class Account {
 		return balance;
 	}
 
+	public void addFunds(double amount) { this.balance = balance += amount;}
+
+	public void removeFunds(double amount) { this.balance = balance -= amount;}
+
 	public int getAccountNumber() { return accountNumber; }
 
 	public String getCreated() { return created; }

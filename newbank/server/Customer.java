@@ -8,23 +8,34 @@ import java.util.regex.Pattern;
 public class Customer {
 
 	private String customerName;
-	private String password;
 	private ArrayList<Account> accounts;
+    private String password;
+	private String memorableWord;
 	private static List<Customer> allCustomers;
 
-	public Customer(String accountName, String password) {
+	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
 		this.password = password;
+		this.memorableWord =  memorableWord;
 		this.accounts = new ArrayList<>();
 		this.allCustomers = new ArrayList<>();
 	}
-	
+
+
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {
 			s += a.toString() + "\n";
 		}
 		return s;
+	}
+
+	public String getMemorableWord() {
+		return memorableWord;
+	}
+
+	public void setMemorableWord(String memorableWord) {
+		this.memorableWord = memorableWord;
 	}
 
 	public boolean addAccount(Account account) {

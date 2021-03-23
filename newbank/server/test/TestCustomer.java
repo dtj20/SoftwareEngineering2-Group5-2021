@@ -1,22 +1,24 @@
 package newbank.server.test;
 
-import newbank.server.Customer;
 import newbank.server.Account;
-import static org.junit.Assert.*;
+import newbank.server.Customer;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class TestCustomer {
 
     @Test
     public void testCustomerAccounts() {
-        Customer c = new Customer("John","1234");
+        Customer c = new Customer("John","1234", "jojoba");
         String empty = "";
         assertEquals("Customer is not empty", empty, c.accountsToString());
     }
 
     @Test
     public void testCustomerAddAccount() {
-        Customer c = new Customer("John","1234");
+        Customer c = new Customer("John","1234", "jojoba");
         String empty = "";
         Account acc = new Account("name", 1500);
         c.addAccount(acc);
@@ -25,7 +27,7 @@ public class TestCustomer {
 
     @Test
     public void testFindAccount() {
-        Customer c = new Customer("John","1234");
+        Customer c = new Customer("John","1234", "jojoba");
         Account acc = new Account("name", 1500);
         c.addAccount(acc);
         Account test = c.findAccount("name");
@@ -36,7 +38,8 @@ public class TestCustomer {
     public void testPasswordSet() {
         String name = "John";
         String password = "1234";
-        Customer c = new Customer(name, password);
+        String memorableWord = "jojoba";
+        Customer c = new Customer(name, password, memorableWord);
         assertEquals("passwords do not match", c.getPassword(), password);
     }
 

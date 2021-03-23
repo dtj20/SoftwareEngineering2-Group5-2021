@@ -16,15 +16,15 @@ public class NewBank {
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer("bhagy","123");
+		Customer bhagy = new Customer("bhagy","123", "coffee");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer("christina","456");
+		Customer christina = new Customer("christina","456", "zigzag");
 		christina.addAccount(new Account("Savings" ,1500.0));
 		customers.put("christina", christina);
 
-		Customer john = new Customer("john","789");
+		Customer john = new Customer("john","789", "jojoba");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("john", john);
 	}
@@ -178,7 +178,9 @@ public class NewBank {
 
 	public boolean newCustomer(){
 		boolean validPassword = false;
+		boolean validMemWord = false;
 		String accountPassword = null;
+		String memorableWord = null;
 		String customerName = menuResponseBuilder("Please enter the first name of the new customer").toLowerCase();
 		while (!validPassword) {
 			accountPassword = menuResponseBuilder("Please enter your password.\n" +
@@ -193,8 +195,20 @@ public class NewBank {
 			} else{
 				out.println("Password is too weak. Try something else.");
 			}
+
 		}
-		Customer newCustomer = new Customer(customerName,accountPassword);
+
+		while(!validMemWord) {
+			memorableWord = menuResponseBuilder("Please enter a 6 character memorable word for security purposes.");
+
+			if(memorableWord.length() == 6) {
+				validMemWord = true;
+			} else {
+				System.out.println("Please enter a 6 character memorable word for security purposes.");
+			}
+		}
+
+		Customer newCustomer = new Customer(customerName,accountPassword, memorableWord);
 
 		//default is to create main account for new customer
 		newAccount(newCustomer, "Main", 5.00);

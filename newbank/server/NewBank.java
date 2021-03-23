@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
@@ -10,6 +11,8 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
@@ -208,5 +211,9 @@ public class NewBank {
 	public void newAccount(Customer customer, String accountName, Double openingBalance){
 			customer.addAccount(new Account(accountName, openingBalance));
 
+	}
+
+	public void addGlobalTransaction(Transaction t) {
+		globalTransactions.add(t);
 	}
 }

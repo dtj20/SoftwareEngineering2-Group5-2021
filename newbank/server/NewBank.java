@@ -10,6 +10,7 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
@@ -144,7 +145,7 @@ public class NewBank {
 					"one special character " +
 					"and a length of at least 8 characters and a maximum of 20 characters";
 		}
-	}
+	} 
 
 	//Move funds across accounts
 
@@ -222,5 +223,24 @@ public class NewBank {
 	public void newAccount(Customer customer, String accountName, Double openingBalance){
 			customer.addAccount(new Account(accountName, openingBalance));
 
+	}
+
+	public boolean checkMemorableWord(String username, String threeChar) {
+		if(customers.containsKey(username)) {
+			Customer customer = customers.get(username);
+
+			String customerMatch = "";
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(0));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
+
+			return customerMatch.equals(threeChar);
+		}
+		return false;
+	}
+
+	public void updatePassword(String username, String password) {
+		Customer customer = customers.get(username);
+		customer.setPassword(password);
 	}
 }

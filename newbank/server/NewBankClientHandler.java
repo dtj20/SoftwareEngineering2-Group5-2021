@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Locale;
 
 public class NewBankClientHandler extends Thread{
 
@@ -26,7 +25,7 @@ public class NewBankClientHandler extends Thread{
 		// keep getting requests from the client and processing them
 		try {
 			while(!loginSuccess) {
-				out.println("Would you like to LOGIN or REGISTER");
+				out.println("Would you like to LOGIN or REGISTER?\nForgot your password? enter P.");
 				String userChoice = in.readLine().toLowerCase();
 				if (userChoice.equals("register")) {
 					if (bank.newCustomer()) {
@@ -74,7 +73,37 @@ public class NewBankClientHandler extends Thread{
 					} else {
 						out.println("Log In Failed");
 					}
+				} else if(userChoice.equals("p")) {
+					out.println("Enter Username:");
+					String username = in.readLine().toLowerCase();
+
+					out.println("Enter the 1st character from your memorable word:");
+					String firstChar = in.readLine();
+
+					out.println("Enter the 3rd character from your memorable word:");
+					String secondChar = in.readLine();
+
+					out.println("Enter the 6th character from your memorable word:");
+					String thirdChar = in.readLine();
+
+					String threeChars = firstChar + secondChar + thirdChar;
+
+					if(bank.checkMemorableWord(username, threeChars)){
+
+						out.println("Please enter your strong new password:");
+						String newPassword = in.readLine();
+
+						if(Customer.isValid(newPassword)) {
+							bank.updatePassword(username, newPassword);
+							out.println("You've successfully updated your password.");
+						}
+
+					} else {
+						out.println("Your character selection does not match.");
+					}
+
 				}
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

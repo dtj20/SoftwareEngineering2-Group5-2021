@@ -105,6 +105,10 @@ public class Customer {
 		return matcher.matches();
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public Boolean changePassword(CustomerID customer, String password){
 		if(isValid(password)){
 			this.password = password;

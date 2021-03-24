@@ -11,6 +11,7 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+
 	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
 	private NewBank() {
@@ -90,10 +91,8 @@ public class NewBank {
 			} else if(request.equals("5")) {
 					String amount = menuResponseBuilder("Please specify an amount");
 					String payerName = menuResponseBuilder("Please specify a paying account");
-				    String sortCode = menuResponseBuilder(("Please specify a sort code"));
-				    String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
-				    String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
-					return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
+					String receivingAccount = menuResponseBuilder(("Please specify a receiving account"));
+					return pay(customer, amount, payerName, receivingAccount);
 			} else {
 				return "Invalid Response. please choose from the menu";
 			}
@@ -254,6 +253,25 @@ public class NewBank {
 	public void newAccount(Customer customer, String accountName, Double openingBalance){
 			customer.addAccount(new Account(accountName, openingBalance));
 
+	}
+
+	public boolean checkMemorableWord(String username, String threeChar) {
+		if(customers.containsKey(username)) {
+			Customer customer = customers.get(username);
+
+			String customerMatch = "";
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(0));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
+
+			return customerMatch.equals(threeChar);
+		}
+		return false;
+	}
+
+	public void updatePassword(String username, String password) {
+		Customer customer = customers.get(username);
+		customer.setPassword(password);
 	}
 
 	public void addGlobalTransaction(Transaction t) {

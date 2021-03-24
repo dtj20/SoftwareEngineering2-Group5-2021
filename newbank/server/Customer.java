@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 public class Customer {
 
 	private String customerName;
+	private String password;
 	private ArrayList<Account> accounts;
-    private String password;
 	private static List<Customer> allCustomers;
 
 	public Customer(String accountName, String password) {

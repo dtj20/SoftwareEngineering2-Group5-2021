@@ -123,6 +123,7 @@ public class NewBank {
 			Account customerAccount = c.findAccount(accountName);
 
 			return customerAccount.transactionsToString();
+
 		} catch(Exception e) {
 			return "No transactions made.";
 		}

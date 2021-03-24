@@ -72,4 +72,9 @@ public class Transaction {
         int x = r.nextInt(100);
         return x;
     }
+
+    public String toString() {
+        return "< Received " + amount + "$ from" + this.payingAccount
+                + " on the date " + this.date + ">";
+    }
 }

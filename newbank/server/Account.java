@@ -65,6 +65,10 @@ public class Account {
 		return s;
 	}
 
+//	public List<Transaction> getTransactions() {
+//		return accountTransactions;
+//	}
+
 	public void addTransaction(Transaction t) {
 		accountTransactions.add(t);
 	}

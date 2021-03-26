@@ -3,6 +3,7 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class NewBank {
 	
@@ -205,8 +206,54 @@ public class NewBank {
 	}
 
 	//create new method creating new account for an existing customer
-	public void newAccount(Customer customer, String accountName, Double openingBalance){
-			customer.addAccount(new Account(accountName, openingBalance));
 
+	//Question: is this code to be re-used for option 2 (savings) and 3 (checking) as it is or to be tailored as newSavingsAccount and newCheckingAccount?
+
+	public String newAccount(Customer customer, String accountName, Double openingBalance)
+	{
+		Scanner input = new Scanner(System.in);
+
+		customer.addAccount(new Account(accountName, openingBalance));
+
+		int totalAccounts = 3; //hard-coded as three for "bhagy", "christina" and "john"
+		String depositChoice;
+
+//		System.out.print("Would you like to create a checking or savings account? ");
+//		accountType = input.next();
+
+		//check to ensure the maximum number of accounts (10) has not been reached
+		if(totalAccounts <= 10)
+		{
+			//get the account name and check to ensure it doesn't already exist, loop until new name
+			System.out.println("Enter the name of your new account: ");
+			accountName = input.next();
+
+			while(accountName.equalsIgnoreCase(String.valueOf(customers)))
+			{
+				System.out.println("Account name already exists. Please re-enter a new name. ");
+			}
+
+			System.out.print("Do you want to make an initial deposit? (Yes/No): ");
+			depositChoice = input.next();
+
+			while(!(depositChoice.equals("Yes") || depositChoice.equals("No")))
+			{
+				System.out.println("Error. Incorrect character. Try again.");
+			}
+
+			if(depositChoice.equals("Yes"))
+			{
+				System.out.print("Enter your initial deposit: ");
+				openingBalance = input.nextDouble();
+			}
+
+			totalAccounts++;
+			return "Successfully created new account. ";
+		}
+		else
+		{
+			return "Maximum number of accounts reached."; //Question: adding option to remove accounts too?
+		}
 	}
+
 }

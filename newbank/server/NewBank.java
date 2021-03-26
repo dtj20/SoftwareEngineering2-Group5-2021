@@ -81,11 +81,10 @@ public class NewBank {
 			} else if(request.equals("5")) {
 					String amount = menuResponseBuilder("Please specify an amount");
 					String payerName = menuResponseBuilder("Please specify a paying account");
-					String receivingAccount = menuResponseBuilder(("Please specify a receiving account"));
 				    String sortCode = menuResponseBuilder(("Please specify a sort code"));
 				    String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
 				    String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
-					return pay(customer, amount, payerName, receivingAccount, sortCode, payerAccountNumber, receiverAccountNumber);
+					return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
 			} else {
 				return "Invalid Response. please choose from the menu";
 			}
@@ -116,18 +115,20 @@ public class NewBank {
 	/*
 	 * Pay method.
 	 */
-	private String pay(CustomerID customer, String amount, String payerName, String receiverName,
+	private String pay(CustomerID customer, String amount, String payerName,
 					   String sortCode, String payerAccountNumber, String receiverAccountNumber) {
 
-		if (Customer.isCustomer(payerName) && Customer.isCustomer(receiverName)) {
+		if (Customer.isCustomer(payerName)) {
 			Customer payer = customers.get(customer.getKey());
-			Customer receiver = customers.get(receiverName);
 
 			Account payerAccount = payer.findAccountByAccountNumber(Integer.parseInt(payerAccountNumber));
-			Account receiverAccount = receiver.findAccountByAccountNumber(Integer.parseInt(receiverAccountNumber));
 
 			payerAccount.balance -= Double.parseDouble(amount);
+
 			if (Integer.parseInt(sortCode) == payerAccount.getSort()) {
+				String receiverName = menuResponseBuilder(("Please specify a receiving account"));
+				Customer receiver = customers.get(receiverName);
+				Account receiverAccount = receiver.findAccountByAccountNumber(Integer.parseInt(receiverAccountNumber));
 				receiverAccount.balance += Double.parseDouble(amount);
 			}
 

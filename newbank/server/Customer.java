@@ -68,6 +68,18 @@ public class Customer {
         return null;
     }
 
+	/*
+	 * Method to find an account based on the accountNumber provided.
+	 */
+	public Account findAccountByAccountNumber(int accountNumber) {
+		for (Account account : accounts) {
+			if (account.getAccountNumber() == accountNumber) {
+				return account;
+			}
+		}
+		return null;
+	}
+
 	public ArrayList<Account> getAccounts(){
 	    return accounts;
 	}

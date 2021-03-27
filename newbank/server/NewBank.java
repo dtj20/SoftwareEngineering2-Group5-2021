@@ -121,20 +121,23 @@ public class NewBank {
 	private String pay(CustomerID customer, String amount, String payerName,
 					   String sortCode, String payerAccountNumber, String receiverAccountNumber) {
 
+		double parseDouble = Double.parseDouble(amount);
 		if (Customer.isCustomer(payerName)) {
 			Customer payer = customers.get(customer.getKey());
 
 			Account payerAccount = payer.findAccountByAccountNumber(Integer.parseInt(payerAccountNumber));
 
-			payerAccount.balance -= Double.parseDouble(amount);
+			payerAccount.balance -= parseDouble;
 
 			if (Integer.parseInt(sortCode) == payerAccount.getSort()) {
 				String receiverName = menuResponseBuilder(("Please specify a receiving account"));
 				Customer receiver = customers.get(receiverName);
 				Account receiverAccount = receiver.findAccountByAccountNumber(Integer.parseInt(receiverAccountNumber));
-				receiverAccount.balance += Double.parseDouble(amount);
+				receiverAccount.balance += parseDouble;
 			}
-
+			Transaction t = new Transaction(payerAccountNumber, receiverAccountNumber, sortCode, parseDouble);
+			globalTransactions.add(t);
+			payerAccount.addTransaction(t);
 			return "SUCCESS";
 		} else {
 			return "FAIL";
@@ -172,7 +175,9 @@ public class NewBank {
 
 				payerAccount.removeFunds(amount);
 				payeeAccount.addFunds(amount);
-
+				Transaction t = new Transaction(payerAccount.getAccountNumber() + "", payeeAccount.getAccountNumber() + "", payeeAccount.getSort() + "", amount);
+				globalTransactions.add(t);
+				payerAccount.addTransaction(t);
 				return "Funds successfully transferred.";
 			}
 			else {

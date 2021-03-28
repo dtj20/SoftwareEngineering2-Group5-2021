@@ -18,7 +18,7 @@ public class Customer {
 		this.accounts = new ArrayList<>();
 		this.allCustomers = new ArrayList<>();
 	}
-	
+
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {
@@ -30,6 +30,7 @@ public class Customer {
 	public boolean addAccount(Account account) {
 		try {
 		    accounts.add(account);
+//		    System.out.println(accounts);
 			return true;
 		}
 		catch(Exception e) {
@@ -61,8 +62,10 @@ public class Customer {
 	 */
 	public Account findAccount(String accountName) {
         for (Account account : accounts) {
+			System.out.println(account.getName());
             if (account.getName().equals(accountName)) {
-                return account;
+//
+            	return account;
             }
         }
         return null;

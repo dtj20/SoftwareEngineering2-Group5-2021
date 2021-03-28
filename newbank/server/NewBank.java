@@ -3,16 +3,13 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class NewBank {
 
 	private static final NewBank bank = new NewBank();
-	private HashMap<String, Customer> customers;
+	private final HashMap<String, Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
-	private static final Scanner input = new Scanner(System.in);
-
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -67,12 +64,12 @@ public class NewBank {
 				String accountType = "Savings";
 				String accountName = menuResponseBuilder("Please enter the name of the new account");
 				double openingBalance = 0;
-				return newAccount(customer, accountName, openingBalance, accountType);
-			} else if(request.equals("3")) {
+				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
+			} else if (request.equals("3")) {
 				String accountType = "Checking";
 				String accountName = menuResponseBuilder("Please enter the name of the new account");
 				double openingBalance = 0;
-				return newAccount(customer, accountName, openingBalance, accountType);
+				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
 
 //			else if (request.equals("2")) {
 //				if (customers.get(customer.getKey()).addAccount(new Account("Savings", 0.0))) {
@@ -211,18 +208,39 @@ public class NewBank {
 		}
 	}
 
+	//convert CustomerID object to Customer object
+	private Customer getCustomerByID(CustomerID cID) {
+		return (customers.get(cID.getKey()));
+	}
+
 	//create new method creating new account for an existing customer
 
 	public String newAccount(Customer customer, String accountName, Double openingBalance, String accountType) {
 
-		customer.addAccount(new Account(accountName, openingBalance));
+		String accountNameLower = accountName.toLowerCase();
+
+		if (customer.findAccount(accountNameLower) == null) {
+//			System.out.println(accountName);
+			customer.addAccount(new Account(accountNameLower, openingBalance));
+		} else {
+
+			accountName = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
+//			customer.addAccount(new Account(accountNameLower, openingBalance));
+		}
 
 		//get the account name and check to ensure it doesn't already exist, loop until new name
 
-		try {
-			while (accountName.equals(String.valueOf(customer.findAccount(accountName)))) {
-				System.out.println("Account name already exists. Please re-enter a new name. ");
-			}
+//		while(accountName.equalsIgnoreCase(customer.findAccount(accountName).getName())) {
+//			accountName = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
+//		}
+
+//		customers.put(accountName, customer);
+
+		if (accountType.equals("Savings")) {
+			return "Successfully created new savings account.\n\n";
+		} else {
+			return "Successfully created new checking account.\n\n";
+		}
 
 //			System.out.print("Do you want to make an initial deposit? (Yes/No): ");
 //			String depositChoice = input.next();
@@ -235,23 +253,5 @@ public class NewBank {
 //				System.out.print("Enter your initial deposit: ");
 //				openingBalance = input.nextDouble();
 //			}
-
-			int savingAccounts = 1;
-			int checkingAccounts = 1;
-
-			if(accountType.equals("Savings")){
-				savingAccounts++;
-			} else{
-				checkingAccounts++;
-			}
-
-			newAccount(customer, accountName, openingBalance, accountType);
-
-			return "Successfully created new account. ";
-
-		} catch (Exception e) {
-			return "Unable to create account.";
-		}
-
 	}
 }

@@ -10,21 +10,22 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer("bhagy","123");
+		Customer bhagy = new Customer("bhagy","123", "coffee");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer("christina","456");
+		Customer christina = new Customer("christina","456", "zigzag");
 		christina.addAccount(new Account("Savings" ,1500.0));
 		customers.put("christina", christina);
 
-		Customer john = new Customer("john","789");
+		Customer john = new Customer("john","789", "jojoba");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("john", john);
 	}
@@ -151,7 +152,7 @@ public class NewBank {
 					"one special character " +
 					"and a length of at least 8 characters and a maximum of 20 characters";
 		}
-	}
+	} 
 
 	//Move funds across accounts
 
@@ -185,7 +186,9 @@ public class NewBank {
 
 	public boolean newCustomer(){
 		boolean validPassword = false;
+		boolean validMemWord = false;
 		String accountPassword = null;
+		String memorableWord = null;
 		String customerName = menuResponseBuilder("Please enter the first name of the new customer").toLowerCase();
 		while (!validPassword) {
 			accountPassword = menuResponseBuilder("Please enter your password.\n" +
@@ -200,8 +203,20 @@ public class NewBank {
 			} else{
 				out.println("Password is too weak. Try something else.");
 			}
+
 		}
-		Customer newCustomer = new Customer(customerName,accountPassword);
+
+		while(!validMemWord) {
+			memorableWord = menuResponseBuilder("Please enter a 6 character memorable word for security purposes.");
+
+			if(memorableWord.length() == 6) {
+				validMemWord = true;
+			} else {
+				System.out.println("Please enter a 6 character memorable word for security purposes.");
+			}
+		}
+
+		Customer newCustomer = new Customer(customerName,accountPassword, memorableWord);
 
 		//default is to create main account for new customer
 		newAccount(newCustomer, "Main", 5.00);
@@ -215,5 +230,24 @@ public class NewBank {
 	public void newAccount(Customer customer, String accountName, Double openingBalance){
 			customer.addAccount(new Account(accountName, openingBalance));
 
+	}
+
+	public boolean checkMemorableWord(String username, String threeChar) {
+		if(customers.containsKey(username)) {
+			Customer customer = customers.get(username);
+
+			String customerMatch = "";
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(0));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
+
+			return customerMatch.equals(threeChar);
+		}
+		return false;
+	}
+
+	public void updatePassword(String username, String password) {
+		Customer customer = customers.get(username);
+		customer.setPassword(password);
 	}
 }

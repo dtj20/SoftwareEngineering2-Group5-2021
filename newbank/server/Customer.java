@@ -10,21 +10,32 @@ public class Customer {
 	private String customerName;
 	private ArrayList<Account> accounts;
     private String password;
+	private String memorableWord;
 	private static List<Customer> allCustomers;
 
-	public Customer(String accountName, String password) {
+	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
 		this.password = password;
+		this.memorableWord =  memorableWord;
 		this.accounts = new ArrayList<>();
 		this.allCustomers = new ArrayList<>();
 	}
-	
+
+
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {
 			s += a.toString() + "\n";
 		}
 		return s;
+	}
+
+	public String getMemorableWord() {
+		return memorableWord;
+	}
+
+	public void setMemorableWord(String memorableWord) {
+		this.memorableWord = memorableWord;
 	}
 
 	public boolean addAccount(Account account) {
@@ -104,6 +115,10 @@ public class Customer {
 	public static boolean isValid(final String password) {
 		Matcher matcher = pattern.matcher(password);
 		return matcher.matches();
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Boolean changePassword(CustomerID customer, String password){

@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
@@ -10,6 +11,8 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
@@ -110,6 +113,22 @@ public class NewBank {
 
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
+	}
+
+	/*
+	 * Method for showing customer's transaction history under a specific account.
+	 */
+	private String showTransactionHistory(CustomerID customer, String accountName){
+		try {
+			Customer c = customers.get(customer.getKey());
+
+			Account customerAccount = c.findAccount(accountName);
+
+			return customerAccount.transactionsToString();
+
+		} catch(Exception e) {
+			return "No transactions made.";
+		}
 	}
 
 	/*
@@ -215,5 +234,9 @@ public class NewBank {
 	public void newAccount(Customer customer, String accountName, Double openingBalance){
 			customer.addAccount(new Account(accountName, openingBalance));
 
+	}
+
+	public void addGlobalTransaction(Transaction t) {
+		globalTransactions.add(t);
 	}
 }

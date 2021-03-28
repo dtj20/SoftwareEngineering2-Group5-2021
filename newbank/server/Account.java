@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,6 +13,7 @@ public class Account {
 	private double openingBalance;
 	public double balance;
 	private int accountNumber;
+	public static ArrayList<Integer> accountNumberList = new ArrayList<>();
 	private String created;
 	private int sort = 203045;
 	private String IBAN;
@@ -20,8 +22,9 @@ public class Account {
 		this.accountName = accountName;
 		this.openingBalance = openingBalance;
 		this.balance = openingBalance;
-
-		this.accountNumber = ThreadLocalRandom.current().nextInt(10000000, 100000000);
+		int accountNumber = uniqueAccountNo();
+		this.accountNumber = accountNumber;
+		accountNumberList.add(accountNumber);
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 		Date created = Calendar.getInstance().getTime();
@@ -54,5 +57,17 @@ public class Account {
 	public int getSort() { return sort; }
 
 	public String getIBAN() { return IBAN; }
+
+	private int uniqueAccountNo(){
+		int accountNo = ThreadLocalRandom.current().nextInt(10000000, 100000000);
+		if (accountNumberList==null){
+			return accountNo;
+		} else{
+			while (accountNumberList.contains(accountNo)) {
+				accountNo = ThreadLocalRandom.current().nextInt(10000000, 100000000);
+			}
+		}
+		return accountNo;
+	}
 
 }

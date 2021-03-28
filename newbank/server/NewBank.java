@@ -89,10 +89,12 @@ public class NewBank {
 					String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
 					return move(customer, amount, payerAccount, payeeAccount);
 			} else if(request.equals("5")) {
-					String amount = menuResponseBuilder("Please specify an amount");
-					String payerName = menuResponseBuilder("Please specify a paying account");
-					String receivingAccount = menuResponseBuilder(("Please specify a receiving account"));
-					return pay(customer, amount, payerName, receivingAccount);
+				String amount = menuResponseBuilder("Please specify an amount");
+				String payerName = menuResponseBuilder("Please specify a paying account");
+				String sortCode = menuResponseBuilder(("Please specify a sort code"));
+				String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
+				String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
+				return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
 			} else {
 				return "Invalid Response. please choose from the menu";
 			}

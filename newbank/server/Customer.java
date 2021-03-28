@@ -62,9 +62,7 @@ public class Customer {
 	 */
 	public Account findAccount(String accountName) {
         for (Account account : accounts) {
-			System.out.println(account.getName());
-            if (account.getName().equals(accountName)) {
-//
+            if (account.getName().equalsIgnoreCase(accountName)) {
             	return account;
             }
         }

@@ -223,8 +223,14 @@ public class NewBank {
 //			System.out.println(accountName);
 			customer.addAccount(new Account(accountNameLower, openingBalance));
 		} else {
-
-			accountName = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
+			while(true)
+			{
+				accountNameLower = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
+				if(customer.findAccount(accountNameLower) == null){
+					customer.addAccount(new Account(accountNameLower, openingBalance));
+					break;
+				}
+			}
 //			customer.addAccount(new Account(accountNameLower, openingBalance));
 		}
 

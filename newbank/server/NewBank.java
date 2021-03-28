@@ -216,48 +216,23 @@ public class NewBank {
 	//create new method creating new account for an existing customer
 
 	public String newAccount(Customer customer, String accountName, Double openingBalance, String accountType) {
-
 		String accountNameLower = accountName.toLowerCase();
-
+		//get the account name and check to ensure it doesn't already exist, loop until new name
 		if (customer.findAccount(accountNameLower) == null) {
-//			System.out.println(accountName);
 			customer.addAccount(new Account(accountNameLower, openingBalance));
 		} else {
-			while(true)
-			{
+			while(true) {
 				accountNameLower = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
 				if(customer.findAccount(accountNameLower) == null){
 					customer.addAccount(new Account(accountNameLower, openingBalance));
 					break;
 				}
 			}
-//			customer.addAccount(new Account(accountNameLower, openingBalance));
 		}
-
-		//get the account name and check to ensure it doesn't already exist, loop until new name
-
-//		while(accountName.equalsIgnoreCase(customer.findAccount(accountName).getName())) {
-//			accountName = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
-//		}
-
-//		customers.put(accountName, customer);
-
 		if (accountType.equals("Savings")) {
 			return "Successfully created new savings account.\n\n";
 		} else {
 			return "Successfully created new checking account.\n\n";
 		}
-
-//			System.out.print("Do you want to make an initial deposit? (Yes/No): ");
-//			String depositChoice = input.next();
-//
-//			while (!(depositChoice.equals("Yes") || depositChoice.equals("No"))) {
-//				System.out.println("Error. Incorrect character. Try again.");
-//			}
-//
-//			if (depositChoice.equals("Yes")) {
-//				System.out.print("Enter your initial deposit: ");
-//				openingBalance = input.nextDouble();
-//			}
 	}
 }

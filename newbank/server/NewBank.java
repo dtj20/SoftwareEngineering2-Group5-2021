@@ -61,7 +61,13 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				return showMyAccounts(customer);
+				System.out.println(showMyAccounts(customer));
+				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
+				if(response.equals('Y')) {
+					String account = menuResponseBuilder("Please enter an account name");
+					showTransactionHistory(customer, account);
+				}
+				return "Returning to Main Menu";
 			} else if (request.equals("2")) {
 				if(customers.get(customer.getKey())
 						.addAccount(new Account("Savings",0.0))) {

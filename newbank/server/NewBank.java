@@ -10,7 +10,6 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
-
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
@@ -97,6 +96,7 @@ public class NewBank {
 
 	/**
 	 * Takes a string to send to the user and returns the response
+	 *
 	 * @param s The string to send to the user
 	 * @return the returned input from the user
 	 */
@@ -121,9 +121,7 @@ public class NewBank {
 
 		if (Customer.isCustomer(payerName)) {
 			Customer payer = customers.get(customer.getKey());
-
 			Account payerAccount = payer.findAccountByAccountNumber(Integer.parseInt(payerAccountNumber));
-
 			payerAccount.balance -= Double.parseDouble(amount);
 
 			if (Integer.parseInt(sortCode) == payerAccount.getSort()) {
@@ -152,7 +150,7 @@ public class NewBank {
 					"one special character " +
 					"and a length of at least 8 characters and a maximum of 20 characters";
 		}
-	} 
+	}
 
 	//Move funds across accounts
 
@@ -161,13 +159,10 @@ public class NewBank {
 		try {
 
 			Customer customer = customers.get(customerName.getKey());
-
 			Account payerAccount = customer.findAccount(payerAccountName);
-
 			Account payeeAccount = customer.findAccount(payeeAccountName);
 
 			if (payerAccount.getBalance() >= amount) {
-
 				payerAccount.removeFunds(amount);
 				payeeAccount.addFunds(amount);
 
@@ -203,7 +198,6 @@ public class NewBank {
 			} else{
 				out.println("Password is too weak. Try something else.");
 			}
-
 		}
 
 		while(!validMemWord) {
@@ -219,7 +213,7 @@ public class NewBank {
 		Customer newCustomer = new Customer(customerName,accountPassword, memorableWord);
 
 		//default is to create main account for new customer
-		newAccount(newCustomer, "Main", 5.00);
+		newAccount(newCustomer, "Main", 5.00, "main");
 		customers.put(customerName, newCustomer);
 		//add logic to NewBankClient handler so that a user can either login or register as a new customer
 		if (customers.containsKey(customerName)){return true;}
@@ -227,9 +221,26 @@ public class NewBank {
 	}
 
 	//create new method creating new account for an existing customer
-	public void newAccount(Customer customer, String accountName, Double openingBalance){
-			customer.addAccount(new Account(accountName, openingBalance));
 
+	public String newAccount(Customer customer, String accountName, Double openingBalance, String accountType) {
+		String accountNameLower = accountName.toLowerCase();
+		//get the account name and check to ensure it doesn't already exist, loop until new name
+		if (customer.findAccount(accountNameLower) == null) {
+			customer.addAccount(new Account(accountNameLower, openingBalance));
+		} else {
+			while(true) {
+				accountNameLower = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
+				if(customer.findAccount(accountNameLower) == null){
+					customer.addAccount(new Account(accountNameLower, openingBalance));
+					break;
+				}
+			}
+		}
+		if (accountType.equals("Savings")) {
+			return "Successfully created new savings account.\n\n";
+		} else {
+			return "Successfully created new checking account.\n\n";
+		}
 	}
 
 	public boolean checkMemorableWord(String username, String threeChar) {

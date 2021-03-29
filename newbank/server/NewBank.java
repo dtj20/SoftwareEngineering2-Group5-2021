@@ -275,18 +275,7 @@ public class NewBank {
 	}
 
 	public boolean checkMemorableWord(String username, String threeChar) {
-		if(customers.containsKey(username)) {
-			Customer customer = customers.get(username);
-
-			String customerMatch = "";
-			customerMatch += Character.toString(customer.getMemorableWord().charAt(0));
-			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
-			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
-
-	}
-
-	public boolean checkMemorableWord(String username, String threeChar) {
-		if(customers.containsKey(username)) {
+		if (customers.containsKey(username)) {
 			Customer customer = customers.get(username);
 
 			String customerMatch = "";
@@ -299,13 +288,10 @@ public class NewBank {
 		return false;
 	}
 
-		public void addGlobalTransaction(Transaction t) {
+	public void addGlobalTransaction(Transaction t) {
 		globalTransactions.add(t);
-			return customerMatch.equals(threeChar);
-		}
-		return false;
-	}
 
+	}
 	public void updatePassword(String username, String password) {
 		Customer customer = customers.get(username);
 		customer.setPassword(password);

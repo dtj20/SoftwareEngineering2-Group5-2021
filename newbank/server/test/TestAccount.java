@@ -6,8 +6,8 @@ import org.junit.Test;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -56,6 +56,25 @@ public class TestAccount {
         if (bhagy.getAccounts().isEmpty()!=true)
             bhagy.closeAccount(accountNumber);
         assertTrue(bhagy.getAccounts().isEmpty());
+
+    }
+
+    @Test
+
+    public void testDuplicateAccountNumbers(){
+
+        ArrayList<Integer> accountNoList = new ArrayList<Integer>();
+
+        for(int i=0; i<10000; i++){
+            int accountNo = ThreadLocalRandom.current().nextInt(1, 1000);
+              while (accountNoList.contains(accountNo)) {
+                accountNo = ThreadLocalRandom.current().nextInt(1, 1000);
+                accountNoList.add(accountNo);
+            }
+        }
+        Set<Integer> set = new HashSet<Integer>(accountNoList);
+
+        assertEquals(accountNoList.size(),set.size());
 
     }
 

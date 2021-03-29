@@ -296,4 +296,6 @@ public class NewBank {
 		Customer customer = customers.get(username);
 		customer.setPassword(password);
 	}
+
+
 }

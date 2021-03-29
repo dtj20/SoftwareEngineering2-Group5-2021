@@ -2,6 +2,7 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NewBank {
@@ -10,6 +11,9 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+
+	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
@@ -58,7 +62,13 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				return showMyAccounts(customer);
+				System.out.println(showMyAccounts(customer));
+				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
+				if(response.equals('Y')) {
+					String account = menuResponseBuilder("Please enter an account name");
+					showTransactionHistory(customer, account);
+				}
+				return "Returning to Main Menu";
 			} else if (request.equals("2")) {
 				if(customers.get(customer.getKey())
 						.addAccount(new Account("Savings",0.0))) {
@@ -79,12 +89,12 @@ public class NewBank {
 					String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
 					return move(customer, amount, payerAccount, payeeAccount);
 			} else if(request.equals("5")) {
-					String amount = menuResponseBuilder("Please specify an amount");
-					String payerName = menuResponseBuilder("Please specify a paying account");
-				    String sortCode = menuResponseBuilder(("Please specify a sort code"));
-				    String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
-				    String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
-					return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
+				String amount = menuResponseBuilder("Please specify an amount");
+				String payerName = menuResponseBuilder("Please specify a paying account");
+				String sortCode = menuResponseBuilder(("Please specify a sort code"));
+				String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
+				String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
+				return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
 			} else {
 				return "Invalid Response. please choose from the menu";
 			}
@@ -96,7 +106,6 @@ public class NewBank {
 
 	/**
 	 * Takes a string to send to the user and returns the response
-	 *
 	 * @param s The string to send to the user
 	 * @return the returned input from the user
 	 */
@@ -114,6 +123,22 @@ public class NewBank {
 	}
 
 	/*
+	 * Method for showing customer's transaction history under a specific account.
+	 */
+	private String showTransactionHistory(CustomerID customer, String accountName){
+		try {
+			Customer c = customers.get(customer.getKey());
+
+			Account customerAccount = c.findAccount(accountName);
+
+			return customerAccount.transactionsToString();
+
+		} catch(Exception e) {
+			return "No transactions made.";
+		}
+	}
+
+	/*
 	 * Pay method.
 	 */
 	private String pay(CustomerID customer, String amount, String payerName,
@@ -121,7 +146,9 @@ public class NewBank {
 
 		if (Customer.isCustomer(payerName)) {
 			Customer payer = customers.get(customer.getKey());
+
 			Account payerAccount = payer.findAccountByAccountNumber(Integer.parseInt(payerAccountNumber));
+
 			payerAccount.balance -= Double.parseDouble(amount);
 
 			if (Integer.parseInt(sortCode) == payerAccount.getSort()) {
@@ -159,10 +186,13 @@ public class NewBank {
 		try {
 
 			Customer customer = customers.get(customerName.getKey());
+
 			Account payerAccount = customer.findAccount(payerAccountName);
+
 			Account payeeAccount = customer.findAccount(payeeAccountName);
 
 			if (payerAccount.getBalance() >= amount) {
+
 				payerAccount.removeFunds(amount);
 				payeeAccount.addFunds(amount);
 
@@ -198,6 +228,7 @@ public class NewBank {
 			} else{
 				out.println("Password is too weak. Try something else.");
 			}
+
 		}
 
 		while(!validMemWord) {
@@ -252,6 +283,24 @@ public class NewBank {
 			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
 			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
 
+	}
+
+	public boolean checkMemorableWord(String username, String threeChar) {
+		if(customers.containsKey(username)) {
+			Customer customer = customers.get(username);
+
+			String customerMatch = "";
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(0));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(2));
+			customerMatch += Character.toString(customer.getMemorableWord().charAt(5));
+
+			return customerMatch.equals(threeChar);
+		}
+		return false;
+	}
+
+		public void addGlobalTransaction(Transaction t) {
+		globalTransactions.add(t);
 			return customerMatch.equals(threeChar);
 		}
 		return false;

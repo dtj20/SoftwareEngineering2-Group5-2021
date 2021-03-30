@@ -62,27 +62,17 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				System.out.println(showMyAccounts(customer));
-				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
-				if(response.equals('Y')) {
-					String account = menuResponseBuilder("Please enter an account name");
-					showTransactionHistory(customer, account);
-				}
-				return "Returning to Main Menu";
+				return showMyAccounts(customer);
 			} else if (request.equals("2")) {
-				if(customers.get(customer.getKey())
-						.addAccount(new Account("Savings",0.0))) {
-					return "New savings account created.\n" + showMyAccounts(customer);
-				} else {
-					return "Unable to create account.";
-				}
+				String accountType = "Savings";
+				String accountName = menuResponseBuilder("Please enter the name of the new account");
+				double openingBalance = 0;
+				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
 			} else if (request.equals("3")) {
-				if(customers.get(customer.getKey())
-						.addAccount(new Account("Checking",0.0))) {
-					return "New Checking account created.\n" + showMyAccounts(customer);
-				} else {
-					return "Unable to create account.";
-				}
+				String accountType = "Checking";
+				String accountName = menuResponseBuilder("Please enter the name of the new account");
+				double openingBalance = 0;
+				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
 			} else if (request.equals("4")) {
 					double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
 					String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
@@ -249,6 +239,11 @@ public class NewBank {
 		//add logic to NewBankClient handler so that a user can either login or register as a new customer
 		if (customers.containsKey(customerName)){return true;}
 		else { return false;}
+	}
+
+	//convert CustomerID object to Customer object
+	private Customer getCustomerByID(CustomerID cID) {
+		return (customers.get(cID.getKey()));
 	}
 
 	//create new method creating new account for an existing customer

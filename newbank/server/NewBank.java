@@ -91,14 +91,44 @@ public class NewBank {
 				String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
 				String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
 				return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
-			} else {
-				return "Invalid Response. please choose from the menu";
+			}  else if (request.equals("6")){
+			String currentPassword = menuResponseBuilder("Enter your existing password.");
+			if(customers.get(customer.getKey()).getPassword().equals(currentPassword)){
+				boolean validPassword = false;
+				while (!validPassword) {
+					String newPassword = menuResponseBuilder("Please enter your new password.\n" +
+							"							Password must contain at least one digit [0-9].\n" +
+							"                             at least one lowercase Latin character [a-z].\n" +
+							"                             at least one uppercase Latin character [A-Z].\n" +
+							"                             at least one special character like ! @ # & ( ).\n" +
+							"                             a length of at least 8 characters and a maximum of 20 characters.");
+
+					if (Customer.isValid(newPassword)) {
+						validPassword = true;
+						customers.get(customer.getKey()).setPassword(newPassword);
+					} else{
+						out.println("Password is too weak. Try something else.");
+					}
+				}
+				return "Password has been successfully changed.";
+			} return "Wrong password. Returned to main menu.";
+		} else if (request.equals("7")) {
+			String accountName = menuResponseBuilder("Please specify the name of the account you want to delete");
+			accountName=accountName.toLowerCase();
+			if (customers.get(customer.getKey()).closeAccount(accountName)){
+				return "Success! Account deleted.";
+			} else{
+				return "Account name does not exist. Returned to menu.";
 			}
-
-
+		} else {
+			return "Invalid Response. please choose from the menu";
 		}
-		return "Invalid Response. Please choose from the Menu";
+
+
 	}
+		return "Invalid Response. Please choose from the Menu";
+}
+
 
 	/**
 	 * Takes a string to send to the user and returns the response

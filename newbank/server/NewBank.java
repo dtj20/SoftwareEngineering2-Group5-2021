@@ -61,9 +61,9 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				System.out.println(showMyAccounts(customer));
+				menuResponseBuilder(showMyAccounts(customer));
 				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
-				if(response.equals('Y')) {
+				if(response.equals("Y")) {
 					String account = menuResponseBuilder("Please enter an account name");
 					showTransactionHistory(customer, account);
 				}
@@ -129,8 +129,11 @@ public class NewBank {
 			Customer c = customers.get(customer.getKey());
 
 			Account customerAccount = c.findAccount(accountName);
+			ArrayList<Transaction> transactions = customerAccount.getTransactions();
 
-			customerAccount.displayTransactions();
+			for (Transaction transaction : transactions) {
+				menuResponseBuilder(transaction.getTransactionSummary());
+			}
 			return "";
 
 		} catch(Exception e) {

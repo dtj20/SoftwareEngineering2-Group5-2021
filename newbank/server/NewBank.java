@@ -61,7 +61,7 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				menuResponseBuilder(showMyAccounts(customer));
+				out.println(showMyAccounts(customer));
 				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
 				if(response.equals("Y")) {
 					String account = menuResponseBuilder("Please enter an account name");
@@ -132,7 +132,7 @@ public class NewBank {
 			ArrayList<Transaction> transactions = customerAccount.getTransactions();
 
 			for (Transaction transaction : transactions) {
-				menuResponseBuilder(transaction.getTransactionSummary());
+				out.println(transaction.getTransactionSummary());
 			}
 			return "";
 

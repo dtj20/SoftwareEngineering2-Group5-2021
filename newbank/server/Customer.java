@@ -48,16 +48,15 @@ public class Customer {
 		}
 	}
 
-	 public boolean closeAccount(int accountNumber) {
-		 for (Account account : accounts) {
-			 if (account.getAccountNumber() == accountNumber) {
-				 int index = accounts.indexOf(account);
-				 accounts.remove(index);
-				 return true;
-			 }
-		 }
-		 return false;
-	 }
+	public boolean closeAccount(String accountName) {
+		Account acc = findAccount(accountName);
+		if(acc!=null){
+			int index = accounts.indexOf(acc);
+			accounts.remove(index);
+			return true;
+		}
+		return false;
+	}
 
 	/*
 	 * Method to check whether a customerName already exists

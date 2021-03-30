@@ -49,15 +49,18 @@ public class TestAccount {
 
     @Test
     public void testCloseAccount(){
-        Customer bhagy = new Customer("123", "Password1!", "coffee");
+        Customer bhagy = new Customer("bhagy", "Password1!", "coffee");
         bhagy.addAccount(new Account("Main", 1000.0));
         Account account = bhagy.findAccount("Main");
-        int accountNumber = account.getAccountNumber();
-        if (bhagy.getAccounts().isEmpty()!=true)
-            bhagy.closeAccount(accountNumber);
+        String accountName = account.getName();
+        if (!bhagy.getAccounts().isEmpty()) {
+            bhagy.closeAccount(accountName);
+        }
         assertTrue(bhagy.getAccounts().isEmpty());
 
     }
+
+
 
     @Test
 

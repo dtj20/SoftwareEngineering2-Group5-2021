@@ -57,6 +57,18 @@ public class Account {
 
 	public String getIBAN() { return IBAN; }
 
+	public String transactionsToString() {
+		String s = "";
+		for(Transaction t : accountTransactions) {
+			s += t.toString() + "\n";
+		}
+		return s;
+	}
+
+//	public List<Transaction> getTransactions() {
+//		return accountTransactions;
+//	}
+
 	public void addTransaction(Transaction t) {
 		accountTransactions.add(t);
 	}

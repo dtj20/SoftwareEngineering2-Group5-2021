@@ -116,6 +116,22 @@ public class NewBank {
 	}
 
 	/*
+	 * Method for showing customer's transaction history under a specific account.
+	 */
+	private String showTransactionHistory(CustomerID customer, String accountName){
+		try {
+			Customer c = customers.get(customer.getKey());
+
+			Account customerAccount = c.findAccount(accountName);
+
+			return customerAccount.transactionsToString();
+
+		} catch(Exception e) {
+			return "No transactions made.";
+		}
+	}
+
+	/*
 	 * Pay method.
 	 */
 	private String pay(CustomerID customer, String amount, String payerName,

@@ -124,7 +124,8 @@ public class NewBank {
 
 			Account customerAccount = c.findAccount(accountName);
 
-			return customerAccount.transactionsToString();
+			customerAccount.displayTransactions();
+			return "";
 
 		} catch(Exception e) {
 			return "No transactions made.";

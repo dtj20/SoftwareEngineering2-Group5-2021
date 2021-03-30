@@ -65,9 +65,11 @@ public class Account {
 		return s;
 	}
 
-//	public List<Transaction> getTransactions() {
-//		return accountTransactions;
-//	}
+	public void displayTransactions() {
+		for (Transaction transaction : accountTransactions) {
+			System.out.println(transaction.getTransactionID());
+		}
+	}
 
 	public void addTransaction(Transaction t) {
 		accountTransactions.add(t);

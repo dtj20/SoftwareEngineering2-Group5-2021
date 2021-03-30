@@ -62,8 +62,14 @@ public class NewBank {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
-				return showMyAccounts(customer);
-			} else if (request.equals("2")) {
+				out.println(showMyAccounts(customer));
+				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
+				if(response.equals("Y")) {
+					String account = menuResponseBuilder("Please enter an account name");
+					showTransactionHistory(customer, account);
+				}
+				return "Returning to Main Menu";
+			}  else if (request.equals("2")) {
 				String accountType = "Savings";
 				String accountName = menuResponseBuilder("Please enter the name of the new account");
 				double openingBalance = 0;
@@ -120,8 +126,12 @@ public class NewBank {
 			Customer c = customers.get(customer.getKey());
 
 			Account customerAccount = c.findAccount(accountName);
+			ArrayList<Transaction> transactions = customerAccount.getTransactions();
 
-			return customerAccount.transactionsToString();
+			for (Transaction transaction : transactions) {
+				out.println(transaction.getTransactionSummary());
+			}
+			return "";
 
 		} catch(Exception e) {
 			return "No transactions made.";
@@ -134,20 +144,23 @@ public class NewBank {
 	private String pay(CustomerID customer, String amount, String payerName,
 					   String sortCode, String payerAccountNumber, String receiverAccountNumber) {
 
+		double parseDouble = Double.parseDouble(amount);
 		if (Customer.isCustomer(payerName)) {
 			Customer payer = customers.get(customer.getKey());
 
 			Account payerAccount = payer.findAccountByAccountNumber(Integer.parseInt(payerAccountNumber));
 
-			payerAccount.balance -= Double.parseDouble(amount);
+			payerAccount.balance -= parseDouble;
 
 			if (Integer.parseInt(sortCode) == payerAccount.getSort()) {
 				String receiverName = menuResponseBuilder(("Please specify a receiving account"));
 				Customer receiver = customers.get(receiverName);
 				Account receiverAccount = receiver.findAccountByAccountNumber(Integer.parseInt(receiverAccountNumber));
-				receiverAccount.balance += Double.parseDouble(amount);
+				receiverAccount.balance += parseDouble;
 			}
-
+			Transaction t = new Transaction(payerAccountNumber, receiverAccountNumber, sortCode, parseDouble);
+			globalTransactions.add(t);
+			payerAccount.addTransaction(t);
 			return "SUCCESS";
 		} else {
 			return "FAIL";
@@ -185,7 +198,9 @@ public class NewBank {
 
 				payerAccount.removeFunds(amount);
 				payeeAccount.addFunds(amount);
-
+				Transaction t = new Transaction(payerAccount.getAccountNumber() + "", payeeAccount.getAccountNumber() + "", payeeAccount.getSort() + "", amount);
+				globalTransactions.add(t);
+				payerAccount.addTransaction(t);
 				return "Funds successfully transferred.";
 			}
 			else {

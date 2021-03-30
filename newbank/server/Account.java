@@ -59,6 +59,10 @@ public class Account {
 
 	public String getIBAN() { return IBAN; }
 
+	public ArrayList getTransactions() {
+		return accountTransactions;
+	}
+
 	private int uniqueAccountNo(){
 		int accountNo = ThreadLocalRandom.current().nextInt(10000000, 100000000);
 		if (accountNumberList==null){

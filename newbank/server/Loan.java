@@ -91,4 +91,51 @@ public class Loan {
         return interestRate;
     }
 
+    public void setLenderID(CustomerID lenderID) {
+        this.lenderID = lenderID;
+    }
+
+    public void setBorrowerID(CustomerID borrowerID) {
+        this.borrowerID = borrowerID;
+    }
+
+    public void setLoanAmount(double loanAmount) {
+        this.loanAmount = loanAmount;
+    }
+
+    public void setRepaymentAmount(double repaymentAmount) {
+        this.repaymentAmount = repaymentAmount;
+    }
+
+    public void setOutstandingAmount(double outstandingAmount) {
+        this.outstandingAmount = outstandingAmount;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setPaymentFrequency(String paymentFrequency) {
+        this.paymentFrequency = paymentFrequency;
+    }
+
+    public void setLoanMonths(int loanMonths) {
+        this.loanMonths = loanMonths;
+    }
+
+    public void setPaymentsMade(int paymentsMade) {
+        this.paymentsMade = paymentsMade;
+    }
+
+    public void setPaymentsRemaining(int paymentsRemaining) {
+        this.paymentsRemaining = paymentsRemaining;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
 }

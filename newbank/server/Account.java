@@ -18,6 +18,7 @@ public class Account {
 	private int sort = 203045;
 	private String IBAN;
 	private ArrayList<Transaction> accountTransactions = new ArrayList<>();
+	private ArrayList<DirectDebit> DirectDebitList = new ArrayList<>();
 
 	public Account(String accountName, double openingBalance) {
 		this.accountName = accountName;
@@ -90,5 +91,7 @@ public class Account {
 	public void addTransaction(Transaction t) {
 		accountTransactions.add(t);
 	}
+
+
 
 }

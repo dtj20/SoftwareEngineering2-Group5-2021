@@ -3,7 +3,9 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class NewBank {
 	
@@ -11,6 +13,8 @@ public class NewBank {
 	private HashMap<String,Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+	private List<LoanOffer> loanOffers = new ArrayList<>();
+	private List<LoanRequest> loanRequests = new ArrayList<>();
 
 	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
@@ -120,7 +124,19 @@ public class NewBank {
 			} else{
 				return "Account name does not exist. Returned to menu.";
 			}
-		} else {
+		} else if (request.equals("loans")) {
+				String loanType = menuResponseBuilder("Would you like view loan OFFERS or REQUESTS?");
+				loanType=loanType.toLowerCase();
+				if (loanType.equals("offers")){
+					return "TODO: SHOW THE LOAN OFFERS";
+				} else if (loanType.equals("requests")){
+					return "TODO: SHOW THE LOAN REQUESTS";
+				} else {
+					return "Please enter OFFER or REQUEST";
+				}
+			}
+
+			else {
 			return "Invalid Response. please choose from the menu";
 		}
 
@@ -349,5 +365,44 @@ public class NewBank {
 		customer.setPassword(password);
 	}
 
+	// FUNCTIONS RELATED TO LOAN OFFERS & REQUESTS
+
+	public List<LoanOffer> getLoanOffers() {
+		return loanOffers;
+	}
+
+	public List<LoanRequest> getLoanRequests() {
+		return loanRequests;
+	}
+
+	//add a loan offer to the list of loan offers
+	public void addLoanOffer(CustomerID lenderID, long offeredLoanAmount,
+								Date offeredMaturityDate, int offeredInterestRate) {
+		loanOffers.add(new LoanOffer(lenderID, offeredLoanAmount, offeredMaturityDate, offeredInterestRate));
+	}
+
+	//add a loan request to the list of loan requests
+	public void addLoanRequest(CustomerID borrowerID, long loanRequestAmount,
+							 Date requestedMaturityDate, int requestedInterestRate) {
+		loanRequests.add(new LoanRequest(borrowerID, loanRequestAmount, requestedMaturityDate, requestedInterestRate));
+	}
+
+	//display list of loan offers
+	public String loanOffersToString() {
+		String s = "";
+		for(LoanOffer loanOffer : loanOffers) {
+			s += loanOffer.toString() + "\n";
+		}
+		return s;
+	}
+
+	//display list of loan requests
+	public String loanRequestsToString() {
+		String s = "";
+		for(LoanRequest loanRequest : loanRequests) {
+			s += loanRequest.toString() + "\n";
+		}
+		return s;
+	}
 
 }

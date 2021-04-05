@@ -51,8 +51,9 @@ public class NewBankClientHandler extends Thread{
 						boolean run_loop = true;
 						while (run_loop) {
 						 out.println("Enter a number to choose from the following options. \n1: Show my accounts. " +
-									"\n2: Create a new savings account. \n3: Create a new checking account. " +
+							"\n2: Create a new savings account. \n3: Create a new checking account. " +
 									"\n4: Move money between your accounts \n5: Pay another person\n6: Change password\n7: Close account\n8: Help. \n9: Logout\n");
+						 out.println("---------\n To view loans please enter: loans");
 							String request = in.readLine();
 							if (request.equals("9")) {
 								run_loop = false;

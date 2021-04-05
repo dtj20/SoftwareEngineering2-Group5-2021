@@ -157,9 +157,16 @@ public class NewBank {
 
 			Account customerAccount = c.findAccount(accountName);
 			ArrayList<Transaction> transactions = customerAccount.getTransactions();
+			ArrayList<Deposit> deposits = customerAccount.getDeposits();
 
+			out.println("---Transactions---");
 			for (Transaction transaction : transactions) {
 				out.println(transaction.getTransactionSummary());
+			}
+
+			out.println("---Deposits---");
+			for(Deposit deposit : deposits) {
+				out.println(deposit.getDepositSummary());
 			}
 			return "";
 
@@ -187,6 +194,9 @@ public class NewBank {
 				Customer receiver = customers.get(receiverName);
 				Account receiverAccount = receiver.findAccountByAccountNumber(Integer.parseInt(receiverAccountNumber));
 				receiverAccount.balance += parseDouble;
+				Deposit d = new Deposit(payerAccount.getAccountNumber() + "", payerAccount.getSort() + "", receiverAccount.getAccountNumber() + "", parseDouble, Source.Internal);
+				receiverAccount.addDeposit(d);
+
 			}
 			Transaction t = new Transaction(payerAccountNumber, receiverAccountNumber, sortCode, parseDouble);
 			globalTransactions.add(t);
@@ -229,8 +239,10 @@ public class NewBank {
 				payerAccount.removeFunds(amount);
 				payeeAccount.addFunds(amount);
 				Transaction t = new Transaction(payerAccount.getAccountNumber() + "", payeeAccount.getAccountNumber() + "", payeeAccount.getSort() + "", amount);
+				Deposit d = new Deposit(payerAccount.getAccountNumber() + "", payerAccount.getSort() + "", payeeAccount.getAccountNumber() + "", amount, Source.Internal);
 				globalTransactions.add(t);
 				payerAccount.addTransaction(t);
+				payeeAccount.addDeposit(d);
 				return "Funds successfully transferred.";
 			}
 			else {

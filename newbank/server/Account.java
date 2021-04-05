@@ -18,6 +18,7 @@ public class Account {
 	private int sort = 203045;
 	private String IBAN;
 	private ArrayList<Transaction> accountTransactions = new ArrayList<>();
+	private ArrayList<Deposit> accountDeposits = new ArrayList<>();
 
 	public Account(String accountName, double openingBalance) {
 		this.accountName = accountName;
@@ -63,6 +64,10 @@ public class Account {
 		return accountTransactions;
 	}
 
+	public ArrayList getDeposits() {
+		return accountDeposits;
+	}
+
 	private int uniqueAccountNo(){
 		int accountNo = ThreadLocalRandom.current().nextInt(10000000, 100000000);
 		if (accountNumberList==null){
@@ -75,13 +80,6 @@ public class Account {
 		return accountNo;
 	}
 
-	public String transactionsToString() {
-		String s = "";
-		for(Transaction t : accountTransactions) {
-			s += t.toString() + "\n";
-		}
-		return s;
-	}
 
 //	public List<Transaction> getTransactions() {
 //		return accountTransactions;
@@ -89,6 +87,10 @@ public class Account {
 
 	public void addTransaction(Transaction t) {
 		accountTransactions.add(t);
+	}
+
+	public void addDeposit(Deposit d) {
+		accountDeposits.add(d);
 	}
 
 }

@@ -2,6 +2,9 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -403,6 +406,65 @@ public class NewBank {
 			s += loanRequest.toString() + "\n";
 		}
 		return s;
+	}
+
+	public boolean checkEligibility(Customer customer) throws ParseException {
+		Account acc = customer.findAccount("Main");
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String startDate = acc.getCreated();
+		LocalDateTime now = LocalDateTime.now();
+		String endDate = sdf.format(now);
+
+		if(atLeast3Months(startDate, endDate) && noActiveLoans(customer) && atLeast3MonthlyDeposits(acc)){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean checkEligibility(Customer customer, double amount) throws ParseException {
+		Account acc = customer.findAccount("Main");
+		if(acc.getBalance() >= amount){
+			return checkEligibility(customer);
+		} else {
+			return false;
+		}
+	}
+
+	public boolean atLeast3Months(String startDate, String endDate) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+		Date d1 = sdf.parse(startDate);
+		Date d2 = sdf.parse(endDate);
+
+		long differenceInTime = d2.getTime() - d1.getTime();
+		long differenceInDays = (differenceInTime / (1000 * 60 * 60 * 24)) % 365;
+
+		if (differenceInDays >= 90) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean noActiveLoans(Customer customer) {
+		/*
+		if(customer.getActiveBorrowerLoan().size() == 0){
+			return true;
+		} else {
+			return false;
+		}
+		*/
+		// After Sara has done her part
+		return false;
+	}
+
+	public boolean atLeast3MonthlyDeposits(Account acc) {
+		ArrayList<Deposit> deposits = acc.getDeposits();
+		if(deposits.size() >= 3){
+			return true;
+		}
+		return false;
 	}
 
 }

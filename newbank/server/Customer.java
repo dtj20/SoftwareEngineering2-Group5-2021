@@ -14,10 +14,10 @@ public class Customer {
 	private String memorableWord;
 	private static List<Customer> allCustomers;
 
-	private final List<Loan> activeLenderLoan = new ArrayList<>();
-	private final List<Loan> activeBorrowerLoan = new ArrayList<>();
-	private final List<Loan> finishedLenderLoan = new ArrayList<>();
-	private final List<Loan> finishedBorrowerLoan = new ArrayList<>();
+	private final ArrayList<Loan> activeLenderLoan = new ArrayList<>();
+	private final ArrayList<Loan> activeBorrowerLoan = new ArrayList<>();
+	private final ArrayList<Loan> finishedLenderLoan = new ArrayList<>();
+	private final ArrayList<Loan> finishedBorrowerLoan = new ArrayList<>();
 
 	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
@@ -135,31 +135,51 @@ public class Customer {
 		}
 	}
 
-	//approving loans
-	// PLACEHOLDER for checkEligibility return variable - to change after FI31
-	public int approvingLoans(){
-		int requestIndex = 0;
-		// ...
-		return requestIndex;
+	//FUNCTIONS TO DEAL WITH ACTIVE-COMPLETED LOANS
+
+	//get - add - remove active loans (as lender)
+	public ArrayList getActiveLenderLoan(){
+		return activeLenderLoan;
+	}
+	public void addActiveLenderLoan(Loan loan){
+		activeLenderLoan.add(loan);
+	}
+	public void removeActiveLenderLoan(Loan loan){
+		activeLenderLoan.remove(loan);
 	}
 
-	//add approved loans (after checkEligibility)
-	public void addApprovedLoan(int requestIndex) {
-		activeBorrowerLoan.add(loanRequests.get(requestIndex));
-		activeLenderLoan.add(loanOffers.get(requestIndex));
-		loanRequests.remove(loanRequests.get(requestIndex));
-		loanOffers.remove(loanOffers.get(requestIndex));
+	//get - add - remove active loans (as borrower)
+	public ArrayList getActiveBorrowerLoan(){
+		return activeBorrowerLoan;
+	}
+	public void addActiveBorrowerLoan(Loan loan){
+		activeBorrowerLoan.add(loan);
+	}
+	public void removeActiveBorrowerLoan(Loan loan){
+		activeBorrowerLoan.remove(loan);
 	}
 
-	//aggregate ActiveLoans
-	public void allActiveLoans(){
-		activeLoans = activeBorrowerLoan + activeLenderLoan;
+	//get - add - remove completed loans (as lender)
+	public ArrayList getFinishedLenderLoan(){
+		return finishedLenderLoan;
+	}
+	public void addFinishedLenderLoan(Loan loan){
+		finishedLenderLoan.add(loan);
+	}
+	public void removeFinishedLenderLoan(Loan loan){
+		finishedLenderLoan.remove(loan);
 	}
 
-//	//aggregate CompletedLoans
-//	public void allCompletedLoans(){
-//		CompletedLoans = finishedBorrowerLoan + finishedLenderLoan;
-//	}
+	//get - add - remove completed loans (as borrower)
+	public ArrayList getFinishedBorrowerLoan(){
+		return finishedBorrowerLoan;
+	}
+	public void addFinishedBorrowerLoan(Loan loan){
+		finishedBorrowerLoan.add(loan);
+	}
+	public void removeFinishedBorrowerLoan(Loan loan){
+		finishedBorrowerLoan.remove(loan);
+	}
 
 }
 

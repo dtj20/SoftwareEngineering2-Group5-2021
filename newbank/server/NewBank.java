@@ -2,7 +2,6 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,8 +18,8 @@ public class NewBank {
 	private List<LoanOffer> loanOffers = new ArrayList<>();
 	private List<LoanRequest> loanRequests = new ArrayList<>();
 
-	private final List<Loan> activeLoans = new ArrayList<>();
-	private final List<Loan> completedLoans = new ArrayList<>();
+	private ArrayList<Loan> activeLoans = new ArrayList<>();
+	private ArrayList<Loan> completedLoans = new ArrayList<>();
 
 	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
@@ -411,17 +410,26 @@ public class NewBank {
 		return s;
 	}
 
-	//tracking loans - active and paid
-	public void trackLoans() {
-		int i = 0;
-		while (i == activeLoans.size()) {
-			if (activeLoans.get(i).getOutstandingAmount() == 0) {
-				completedLoans.add(activeLoans.get(i));
-				activeLoans.remove(activeLoans.get(i));
-			} else {
-				i++;
-			}
-		}
+	//get - add - remove active loans (unpaid)
+	public ArrayList getActiveLoan(){
+		return activeLoans;
+	}
+	public void addActiveLoan(Loan loan){
+		activeLoans.add(loan);
+	}
+	public void removeActiveLoan(Loan loan){
+		activeLoans.remove(loan);
+	}
+
+	//get - add - remove completed loans (paid)
+	public ArrayList getCompletedLoan(){
+		return completedLoans;
+	}
+	public void addCompletedLoan(Loan loan){
+		completedLoans.add(loan);
+	}
+	public void removeCompletedLoan(Loan loan){
+		completedLoans.remove(loan);
 	}
 
 	//display lists of loans - active and paid

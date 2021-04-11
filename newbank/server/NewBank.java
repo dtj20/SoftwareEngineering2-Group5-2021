@@ -476,4 +476,10 @@ public class NewBank {
 		}
 		return false;
 	}
+
+	public void createDirectDebit(Customer payer, Customer receiver, double amount, String paymentFrequency) {
+		String receiverName = receiver.toString();
+		DirectDebit dd = new DirectDebit(receiverName, amount, paymentFrequency);
+		payer.findAccount("Main").getDirectDebitList().add(dd);
+	}
 }

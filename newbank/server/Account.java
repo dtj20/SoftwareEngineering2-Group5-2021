@@ -19,7 +19,7 @@ public class Account {
 	private String IBAN;
 	private ArrayList<Transaction> accountTransactions = new ArrayList<>();
 	private ArrayList<Deposit> accountDeposits = new ArrayList<>();
-	private ArrayList<DirectDebit> DirectDebitList = new ArrayList<>();
+	private ArrayList<DirectDebit> directDebitList = new ArrayList<>();
 
 	public Account(String accountName, double openingBalance) {
 		this.accountName = accountName;
@@ -101,6 +101,7 @@ public class Account {
 		accountDeposits.add(d);
 	}
 
-
-
+	public ArrayList<DirectDebit> getDirectDebitList() {
+		return directDebitList;
+	}
 }

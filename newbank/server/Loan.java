@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Random;
 
 public class Loan {
@@ -10,19 +11,19 @@ public class Loan {
     private double loanAmount;
     private double repaymentAmount;
     private double outstandingAmount;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
     private String paymentFrequency;
     private int loanMonths;
     private int paymentsMade;
     private int paymentsRemaining;
     private double interestRate;
 
-    public Loan(double loanAmount, LocalDate startDate, LocalDate endDate,
+    public Loan(double loanAmount, Date startDate, Date endDate,
                 String paymentFrequency, int repaymentAmount, int loanMonths,
                 double interestRate, CustomerID lenderID, CustomerID borrowerID){
         this.loanAmount = loanAmount;
-        this.startDate = startDate;
+        this.startDate = new Date();
         this.endDate = endDate;
         this.paymentFrequency = paymentFrequency;
         this.loanMonths = loanMonths;
@@ -34,6 +35,7 @@ public class Loan {
         this.loanID = createLoanID();
         this.lenderID = lenderID;
         this.borrowerID = borrowerID;
+
 
     }
 
@@ -67,11 +69,11 @@ public class Loan {
         return outstandingAmount;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
@@ -111,11 +113,11 @@ public class Loan {
         this.outstandingAmount = outstandingAmount;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

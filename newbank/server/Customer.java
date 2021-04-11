@@ -17,7 +17,7 @@ public class Customer {
 	private final List<Loan> activeLenderLoan = new ArrayList<>();
 	private final List<Loan> activeBorrowerLoan = new ArrayList<>();
 	private final List<Loan> finishedLenderLoan = new ArrayList<>();
-	private final List<Loan> finishedBorrowLoan = new ArrayList<>();
+	private final List<Loan> finishedBorrowerLoan = new ArrayList<>();
 
 	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
@@ -135,13 +135,31 @@ public class Customer {
 		}
 	}
 
-	//track active loans borrowed
+	//approving loans
+	// PLACEHOLDER for checkEligibility return variable - to change after FI31
+	public int approvingLoans(){
+		int requestIndex = 0;
+		// ...
+		return requestIndex;
+	}
 
-	//track active loans lent
+	//add approved loans (after checkEligibility)
+	public void addApprovedLoan(int requestIndex) {
+		activeBorrowerLoan.add(loanRequests.get(requestIndex));
+		activeLenderLoan.add(loanOffers.get(requestIndex));
+		loanRequests.remove(loanRequests.get(requestIndex));
+		loanOffers.remove(loanOffers.get(requestIndex));
+	}
 
-	//track paid loans borrowed
+	//aggregate ActiveLoans
+	public void allActiveLoans(){
+		activeLoans = activeBorrowerLoan + activeLenderLoan;
+	}
 
-	//track paid loans lent
+//	//aggregate CompletedLoans
+//	public void allCompletedLoans(){
+//		CompletedLoans = finishedBorrowerLoan + finishedLenderLoan;
+//	}
 
 }
 

@@ -135,23 +135,15 @@ public class Customer {
 		}
 	}
 
-	//track loans borrowed
-	public String trackActiveLoans(CustomerID lenderID, CustomerID borrowerID, double loanAmount, double interestRate, LocalDate startDate,
-										 LocalDate endDate, String paymentFrequency, int repaymentAmount, int loanMonths, double outstandingAmount){
-		if(activeBorrowerLoan.size()<3){
-			activeBorrowerLoan.add(new Loan(lenderID, borrowerID, loanAmount, interestRate, startDate, endDate,
-											paymentFrequency, repaymentAmount, loanMonths, outstandingAmount));
-			return "Loan successfully added. \n" + (activeBorrowerLoan);
-		} else {
-			return "Error. Maximum number of loans reached. \n" + (activeBorrowerLoan);
-		}
+	//track active loans borrowed
 
-	}
+	//track active loans lent
+
+	//track paid loans borrowed
+
+	//track paid loans lent
+
 }
 
-	//display list of loans lent
 
-	//display list of (paid) loans borrowed
-
-	//display list of (paid) loans lent
 

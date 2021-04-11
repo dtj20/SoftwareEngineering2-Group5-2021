@@ -101,15 +101,6 @@ public class Account {
 		accountDeposits.add(d);
 	}
 
-	public void addActiveLoansBorrowed (CustomerID borrowerID, Loan loanAmount,
-										Date requestedMaturityDate, Loan interestRate){
 
-	}
-//		if(loanRequests.size()<3) {
-//			loanRequests.add(new LoanRequest(borrowerID, loanRequestAmount, requestedMaturityDate, requestedInterestRate));
-//			return "Loan request successfully added.";
-//		} else {
-//			return "Maximum of loans requested reached.";
-//		}
 
 }

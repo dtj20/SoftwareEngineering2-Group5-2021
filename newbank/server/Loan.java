@@ -8,6 +8,7 @@ public class Loan {
     private CustomerID lenderID;
     private CustomerID borrowerID;
     private double loanAmount;
+    private double interestRate;
     private double repaymentAmount;
     private double outstandingAmount;
     private LocalDate startDate;
@@ -16,11 +17,9 @@ public class Loan {
     private int loanMonths;
     private int paymentsMade;
     private int paymentsRemaining;
-    private double interestRate;
 
-    public Loan(double loanAmount, LocalDate startDate, LocalDate endDate,
-                String paymentFrequency, int repaymentAmount, int loanMonths,
-                double interestRate, CustomerID lenderID, CustomerID borrowerID){
+    public Loan(CustomerID lenderID, CustomerID borrowerID, double loanAmount, double interestRate, LocalDate startDate,
+                LocalDate endDate, String paymentFrequency, int repaymentAmount, int loanMonths, double outstandingAmount){
         this.loanAmount = loanAmount;
         this.startDate = startDate;
         this.endDate = endDate;

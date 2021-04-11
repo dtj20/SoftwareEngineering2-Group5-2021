@@ -1,5 +1,6 @@
 package newbank.server;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,6 +13,11 @@ public class Customer {
     private String password;
 	private String memorableWord;
 	private static List<Customer> allCustomers;
+
+	private final List<Loan> activeLenderLoan = new ArrayList<>();
+	private final List<Loan> activeBorrowerLoan = new ArrayList<>();
+	private final List<Loan> finishedLenderLoan = new ArrayList<>();
+	private final List<Loan> finishedBorrowLoan = new ArrayList<>();
 
 	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
@@ -129,4 +135,23 @@ public class Customer {
 		}
 	}
 
+	//track loans borrowed
+	public String trackActiveLoans(CustomerID lenderID, CustomerID borrowerID, double loanAmount, double interestRate, LocalDate startDate,
+										 LocalDate endDate, String paymentFrequency, int repaymentAmount, int loanMonths, double outstandingAmount){
+		if(activeBorrowerLoan.size()<3){
+			activeBorrowerLoan.add(new Loan(lenderID, borrowerID, loanAmount, interestRate, startDate, endDate,
+											paymentFrequency, repaymentAmount, loanMonths, outstandingAmount));
+			return "Loan successfully added. \n" + (activeBorrowerLoan);
+		} else {
+			return "Error. Maximum number of loans reached. \n" + (activeBorrowerLoan);
+		}
+
+	}
 }
+
+	//display list of loans lent
+
+	//display list of (paid) loans borrowed
+
+	//display list of (paid) loans lent
+

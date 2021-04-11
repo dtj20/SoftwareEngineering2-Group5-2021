@@ -2,19 +2,24 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class NewBank {
-	
+
 	private static final NewBank bank = new NewBank();
-	private HashMap<String,Customer> customers;
+	private HashMap<String, Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
+
 	private List<LoanOffer> loanOffers = new ArrayList<>();
 	private List<LoanRequest> loanRequests = new ArrayList<>();
+
+	private final List<Loan> activeLoans = new ArrayList<>();
+	private final List<Loan> completedLoans = new ArrayList<>();
 
 	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
@@ -22,21 +27,21 @@ public class NewBank {
 		customers = new HashMap<>();
 		addTestData();
 	}
-	
+
 	private void addTestData() {
-		Customer bhagy = new Customer("bhagy","123", "coffee");
+		Customer bhagy = new Customer("bhagy", "123", "coffee");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer("christina","456", "zigzag");
-		christina.addAccount(new Account("Savings" ,1500.0));
+		Customer christina = new Customer("christina", "456", "zigzag");
+		christina.addAccount(new Account("Savings", 1500.0));
 		customers.put("christina", christina);
 
-		Customer john = new Customer("john","789", "jojoba");
+		Customer john = new Customer("john", "789", "jojoba");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("john", john);
 	}
-	
+
 	public static NewBank getBank(BufferedReader in, PrintWriter out) {
 		bank.setOut(out);
 		bank.setIn(in);
@@ -52,9 +57,9 @@ public class NewBank {
 	}
 
 	public synchronized CustomerID checkLogInDetails(String username, String password) {
-		if(customers.containsKey(username)) {
-		    if(customers.get(username).getPassword().equals(password)){
-                return new CustomerID(username);
+		if (customers.containsKey(username)) {
+			if (customers.get(username).getPassword().equals(password)) {
+				return new CustomerID(username);
 			}
 		}
 
@@ -63,17 +68,17 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
-		if(customers.containsKey(customer.getKey())) {
+		if (customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
 				out.println(showMyAccounts(customer));
 				String response = menuResponseBuilder("Would you like to view the accounts transaction history? Y/N");
-				if(response.equals("Y")) {
+				if (response.equals("Y")) {
 					String account = menuResponseBuilder("Please enter an account name");
 					showTransactionHistory(customer, account);
 				}
 				return "Returning to Main Menu";
-			}  else if (request.equals("2")) {
+			} else if (request.equals("2")) {
 				String accountType = "Savings";
 				String accountName = menuResponseBuilder("Please enter the name of the new account");
 				double openingBalance = 0;
@@ -84,70 +89,70 @@ public class NewBank {
 				double openingBalance = 0;
 				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
 			} else if (request.equals("4")) {
-					double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
-					String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
-					String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
-					return move(customer, amount, payerAccount, payeeAccount);
-			} else if(request.equals("5")) {
+				double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
+				String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
+				String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
+				return move(customer, amount, payerAccount, payeeAccount);
+			} else if (request.equals("5")) {
 				String amount = menuResponseBuilder("Please specify an amount");
 				String payerName = menuResponseBuilder("Please specify a paying account");
 				String sortCode = menuResponseBuilder(("Please specify a sort code"));
 				String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
 				String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
 				return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
-			}  else if (request.equals("6")){
-			String currentPassword = menuResponseBuilder("Enter your existing password.");
-			if(customers.get(customer.getKey()).getPassword().equals(currentPassword)){
-				boolean validPassword = false;
-				while (!validPassword) {
-					String newPassword = menuResponseBuilder("Please enter your new password.\n" +
-							"							Password must contain at least one digit [0-9].\n" +
-							"                             at least one lowercase Latin character [a-z].\n" +
-							"                             at least one uppercase Latin character [A-Z].\n" +
-							"                             at least one special character like ! @ # & ( ).\n" +
-							"                             a length of at least 8 characters and a maximum of 20 characters.");
+			} else if (request.equals("6")) {
+				String currentPassword = menuResponseBuilder("Enter your existing password.");
+				if (customers.get(customer.getKey()).getPassword().equals(currentPassword)) {
+					boolean validPassword = false;
+					while (!validPassword) {
+						String newPassword = menuResponseBuilder("Please enter your new password.\n" +
+								"							Password must contain at least one digit [0-9].\n" +
+								"                             at least one lowercase Latin character [a-z].\n" +
+								"                             at least one uppercase Latin character [A-Z].\n" +
+								"                             at least one special character like ! @ # & ( ).\n" +
+								"                             a length of at least 8 characters and a maximum of 20 characters.");
 
-					if (Customer.isValid(newPassword)) {
-						validPassword = true;
-						customers.get(customer.getKey()).setPassword(newPassword);
-					} else{
-						out.println("Password is too weak. Try something else.");
+						if (Customer.isValid(newPassword)) {
+							validPassword = true;
+							customers.get(customer.getKey()).setPassword(newPassword);
+						} else {
+							out.println("Password is too weak. Try something else.");
+						}
 					}
+					return "Password has been successfully changed.";
 				}
-				return "Password has been successfully changed.";
-			} return "Wrong password. Returned to main menu.";
-		} else if (request.equals("7")) {
-			String accountName = menuResponseBuilder("Please specify the name of the account you want to delete");
-			accountName=accountName.toLowerCase();
-			if (customers.get(customer.getKey()).closeAccount(accountName)){
-				return "Success! Account deleted.";
-			} else{
-				return "Account name does not exist. Returned to menu.";
-			}
-		} else if (request.equals("loans")) {
+				return "Wrong password. Returned to main menu.";
+			} else if (request.equals("7")) {
+				String accountName = menuResponseBuilder("Please specify the name of the account you want to delete");
+				accountName = accountName.toLowerCase();
+				if (customers.get(customer.getKey()).closeAccount(accountName)) {
+					return "Success! Account deleted.";
+				} else {
+					return "Account name does not exist. Returned to menu.";
+				}
+			} else if (request.equals("loans")) {
 				String loanType = menuResponseBuilder("Would you like view loan OFFERS or REQUESTS?");
-				loanType=loanType.toLowerCase();
-				if (loanType.equals("offers")){
+				loanType = loanType.toLowerCase();
+				if (loanType.equals("offers")) {
 					return "TODO: SHOW THE LOAN OFFERS";
-				} else if (loanType.equals("requests")){
+				} else if (loanType.equals("requests")) {
 					return "TODO: SHOW THE LOAN REQUESTS";
 				} else {
 					return "Please enter OFFER or REQUEST";
 				}
+			} else {
+				return "Invalid Response. please choose from the menu";
 			}
 
-			else {
-			return "Invalid Response. please choose from the menu";
+
 		}
-
-
-	}
 		return "Invalid Response. Please choose from the Menu";
-}
+	}
 
 
 	/**
 	 * Takes a string to send to the user and returns the response
+	 *
 	 * @param s The string to send to the user
 	 * @return the returned input from the user
 	 */
@@ -155,7 +160,7 @@ public class NewBank {
 		try {
 			out.println(s);
 			return in.readLine();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return "Error";
 		}
 	}
@@ -167,7 +172,7 @@ public class NewBank {
 	/*
 	 * Method for showing customer's transaction history under a specific account.
 	 */
-	private String showTransactionHistory(CustomerID customer, String accountName){
+	private String showTransactionHistory(CustomerID customer, String accountName) {
 		try {
 			Customer c = customers.get(customer.getKey());
 
@@ -181,12 +186,12 @@ public class NewBank {
 			}
 
 			out.println("---Deposits---");
-			for(Deposit deposit : deposits) {
+			for (Deposit deposit : deposits) {
 				out.println(deposit.getDepositSummary());
 			}
 			return "";
 
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return "No transactions made.";
 		}
 	}
@@ -227,9 +232,9 @@ public class NewBank {
 	 * Method to change customer's password
 	 */
 	private String changePassword(CustomerID customer, String password) {
-		if(customers.get(customer.getKey()).changePassword(customer, password)){
+		if (customers.get(customer.getKey()).changePassword(customer, password)) {
 			return "SUCCESS. Password successfully changed.";
-		} else{
+		} else {
 			return "FAIL. Please enter a strong password that has at least one digit, " +
 					"one lowercase character, " +
 					"one uppercase character, " +
@@ -240,8 +245,7 @@ public class NewBank {
 
 	//Move funds across accounts
 
-	public String move(CustomerID customerName, double amount, String payerAccountName, String payeeAccountName)
-	{
+	public String move(CustomerID customerName, double amount, String payerAccountName, String payeeAccountName) {
 		try {
 
 			Customer customer = customers.get(customerName.getKey());
@@ -260,19 +264,16 @@ public class NewBank {
 				payerAccount.addTransaction(t);
 				payeeAccount.addDeposit(d);
 				return "Funds successfully transferred.";
-			}
-			else {
+			} else {
 				return "Insufficient funds";
 			}
 
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			return "Unable to find account.";
 		}
 	}
 
-	public boolean newCustomer(){
+	public boolean newCustomer() {
 		boolean validPassword = false;
 		boolean validMemWord = false;
 		String accountPassword = null;
@@ -287,31 +288,34 @@ public class NewBank {
 					"                             a length of at least 8 characters and a maximum of 20 characters.");
 
 			if (Customer.isValid(accountPassword)) {
-                validPassword = true;
-			} else{
+				validPassword = true;
+			} else {
 				out.println("Password is too weak. Try something else.");
 			}
 
 		}
 
-		while(!validMemWord) {
+		while (!validMemWord) {
 			memorableWord = menuResponseBuilder("Please enter a 6 character memorable word for security purposes.");
 
-			if(memorableWord.length() == 6) {
+			if (memorableWord.length() == 6) {
 				validMemWord = true;
 			} else {
 				System.out.println("Please enter a 6 character memorable word for security purposes.");
 			}
 		}
 
-		Customer newCustomer = new Customer(customerName,accountPassword, memorableWord);
+		Customer newCustomer = new Customer(customerName, accountPassword, memorableWord);
 
 		//default is to create main account for new customer
 		newAccount(newCustomer, "Main", 5.00, "main");
 		customers.put(customerName, newCustomer);
 		//add logic to NewBankClient handler so that a user can either login or register as a new customer
-		if (customers.containsKey(customerName)){return true;}
-		else { return false;}
+		if (customers.containsKey(customerName)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	//convert CustomerID object to Customer object
@@ -327,9 +331,9 @@ public class NewBank {
 		if (customer.findAccount(accountNameLower) == null) {
 			customer.addAccount(new Account(accountNameLower, openingBalance));
 		} else {
-			while(true) {
+			while (true) {
 				accountNameLower = menuResponseBuilder("Account name already exists.\nPlease re-enter a new name. ");
-				if(customer.findAccount(accountNameLower) == null){
+				if (customer.findAccount(accountNameLower) == null) {
 					customer.addAccount(new Account(accountNameLower, openingBalance));
 					break;
 				}
@@ -360,6 +364,7 @@ public class NewBank {
 		globalTransactions.add(t);
 
 	}
+
 	public void updatePassword(String username, String password) {
 		Customer customer = customers.get(username);
 		customer.setPassword(password);
@@ -377,13 +382,13 @@ public class NewBank {
 
 	//add a loan offer to the list of loan offers
 	public void addLoanOffer(CustomerID lenderID, long offeredLoanAmount,
-								Date offeredMaturityDate, int offeredInterestRate) {
+							 Date offeredMaturityDate, int offeredInterestRate) {
 		loanOffers.add(new LoanOffer(lenderID, offeredLoanAmount, offeredMaturityDate, offeredInterestRate));
 	}
 
 	//add a loan request to the list of loan requests
 	public void addLoanRequest(CustomerID borrowerID, long loanRequestAmount,
-							 Date requestedMaturityDate, int requestedInterestRate) {
+								 Date requestedMaturityDate, int requestedInterestRate) {
 		loanRequests.add(new LoanRequest(borrowerID, loanRequestAmount, requestedMaturityDate, requestedInterestRate));
 	}
 
@@ -403,6 +408,33 @@ public class NewBank {
 			s += loanRequest.toString() + "\n";
 		}
 		return s;
+	}
+
+	//tracking loans - active and paid
+	public void trackLoans() {
+		int i = 0;
+		while (i == activeLoans.size()) {
+			if (activeLoans.get(i).getOutstandingAmount() == 0) {
+				completedLoans.add(activeLoans.get(i));
+				activeLoans.remove(activeLoans.get(i));
+			} else {
+				i++;
+			}
+		}
+	}
+
+	//display lists of loans - active and paid
+	public void displayAllLoans(){
+		String a = "";
+		String p = "";
+		for(Loan activeL : activeLoans){
+			a = activeL.toString();
+			System.out.println("List of currently active loans. \n" + a);
+		}
+		for(Loan paidL : completedLoans){
+			p = paidL.toString();
+			System.out.println("List of currently paid loans. \n" + p);
+		}
 	}
 
 }

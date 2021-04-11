@@ -18,9 +18,8 @@ public class Loan {
     private int paymentsRemaining;
     private double interestRate;
 
-    public Loan(double loanAmount, LocalDate startDate, LocalDate endDate,
-                String paymentFrequency, int repaymentAmount, int loanMonths,
-                double interestRate, CustomerID lenderID, CustomerID borrowerID){
+    public Loan(CustomerID lenderID, CustomerID borrowerID, double loanAmount, LocalDate startDate, LocalDate endDate,
+                String paymentFrequency, int repaymentAmount, int loanMonths, double interestRate, double outstandingAmount){
         this.loanAmount = loanAmount;
         this.startDate = startDate;
         this.endDate = endDate;

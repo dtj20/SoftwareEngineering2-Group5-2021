@@ -65,7 +65,7 @@ public class NewBank {
 	}
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request) {
+	public synchronized String processRequest(CustomerID customer, String request) throws ParseException {
 		if(customers.containsKey(customer.getKey())) {
 
 			if (request.equals("1")) {
@@ -136,6 +136,43 @@ public class NewBank {
 					return "TODO: SHOW THE LOAN REQUESTS";
 				} else {
 					return "Please enter OFFER or REQUEST";
+				}
+			} 	else if (request.equals("apply")) {
+				String loanRequestAmount = menuResponseBuilder("Please enter your desired loan amount:");
+				String requestedMaturityDate = menuResponseBuilder("Please enter your desired final repayment date -> dd/MM/yyyy");
+
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				Date rmd = sdf.parse(requestedMaturityDate);
+
+				int interestRate = 75/1000;
+
+				if(checkEligibility(customers.get(customer.getKey()))) {
+					loanRequests.add(new LoanRequest(customer, Long.parseLong(loanRequestAmount), rmd, interestRate));
+					return "Your loan request has been successfully created.";
+				}
+				else {
+					return "You are not eligible for a loan at this time.";
+				}
+			}
+			else if (request.equals("offer")) {
+				String loanRequestAmount = menuResponseBuilder("Please enter your desired loan amount:");
+				String requestedMaturityDate = menuResponseBuilder("Please enter your desired final repayment date -> dd/MM/yyyy");
+				String interestRate = menuResponseBuilder("Please enter your choice of interest rate -> 5 or 10:");
+				int intRate;
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				Date rmd = sdf.parse(requestedMaturityDate);
+
+				if(checkEligibility(customers.get(customer.getKey()), Double.parseDouble(loanRequestAmount))) {
+					if (interestRate.equals("5")){
+						intRate = 5/100;
+					} else {
+						intRate = 10/100;
+					}
+					loanOffers.add(new LoanOffer(customer, Long.parseLong(loanRequestAmount), rmd, intRate));
+					return "Your loan offer has been successfully created.";
+				}
+				else {
+					return "You are not eligible for a loan at this time.";
 				}
 			}
 

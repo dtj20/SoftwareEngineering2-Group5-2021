@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.ParseException;
 
 public class NewBankClientHandler extends Thread{
 
@@ -53,7 +54,7 @@ public class NewBankClientHandler extends Thread{
 						 out.println("Enter a number to choose from the following options. \n1: Show my accounts. " +
 							"\n2: Create a new savings account. \n3: Create a new checking account. " +
 									"\n4: Move money between your accounts \n5: Pay another person\n6: Change password\n7: Close account\n8: Help. \n9: Logout\n");
-						 out.println("---------\n To view loans please enter: loans");
+						 out.println("-----LOANS-----\nTo view loans please enter: loans\nTo apply for a loan enter: apply\nTo offer a loan enter: offer");
 							String request = in.readLine();
 							if (request.equals("9")) {
 								run_loop = false;
@@ -106,7 +107,7 @@ public class NewBankClientHandler extends Thread{
 				}
 
 			}
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 		finally {

@@ -550,7 +550,7 @@ public class NewBank {
 		Date endDate = loanOffer.getOfferedMaturityDate();
 		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
 
-		Loan loan = new Loan(loanOffer.getOfferedLoanAmount(), startDate, loanOffer.getOfferedMaturityDate(), paymentFreq,
+		Loan loan = new Loan(loanOffer.getOfferedLoanAmount(), loanOffer.getOfferedMaturityDate(), paymentFreq,
 				repaymentAmount, loanMonths, loanOffer.getOfferedInterestRate(), loanOffer.getLenderID(), borrowerID);
 //TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
 
@@ -566,7 +566,7 @@ public class NewBank {
 		Date endDate = loanRequest.getRequestedMaturityDate();
 		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
 
-		Loan loan = new Loan(loanRequest.getLoanRequestAmount(), startDate, loanRequest.getRequestedMaturityDate(), paymentFreq,
+		Loan loan = new Loan(loanRequest.getLoanRequestAmount(), loanRequest.getRequestedMaturityDate(), paymentFreq,
 				repaymentAmount, loanMonths, loanRequest.getRequestedInterestRate(), loanRequest.getBorrowerID(), lenderID);
 		//TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
 

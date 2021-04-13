@@ -495,7 +495,7 @@ public class NewBank {
 		}
 	}
 
-	public Loan acceptLoanOffer(LoanOffer loanOffer, CustomerID borrowerID, String paymentFreq, int repaymentAmount){
+	public void acceptLoanOffer(LoanOffer loanOffer, CustomerID borrowerID, String paymentFreq, int repaymentAmount){
 		Date startDate=new Date();
 		Date endDate = loanOffer.getOfferedMaturityDate();
 		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
@@ -504,11 +504,17 @@ public class NewBank {
 				repaymentAmount, loanMonths, loanOffer.getOfferedInterestRate(), loanOffer.getLenderID(), borrowerID);
 //TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
 
+
 //remove loan offer
 		if (removeLoanOffer(loanOffer.getLoanOfferId())) {
-			return loan;
+			addActiveLoan(loan);
+			Customer borrower = getCustomerByID(borrowerID);
+			Customer lender = getCustomerByID(loanOffer.getLenderID());
+			borrower.addActiveBorrowerLoan(loan);
+			lender.addActiveLenderLoan(loan);
+			createDirectDebit(borrower, lender, loan.getRepaymentAmount(), loan.getPaymentFrequency());
 		}
-		return null;
+
 	}
 
 	public void acceptLoanRequest(LoanRequest loanRequest, CustomerID lenderID, String paymentFreq, int repaymentAmount){
@@ -679,11 +685,7 @@ public class NewBank {
 			String date = menuResponseBuilder("Please enter a loan end date in the following format dd/mm/yyyy");
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Date matDate = sdf.parse(date);
-			for(Account acc : cust.getAccounts()) {
-				if (acc.getName().equals("Main")) {
-					acc.removeFunds(loanAmount);
-				}
-			}
+			cust.findAccount("Main").removeFunds(loanAmount);
 			addLoanOffer(cID, loanAmount, matDate, intRate);
 		} else {
 			out.println("Sorry, you are not able to offer a loan at this time.");

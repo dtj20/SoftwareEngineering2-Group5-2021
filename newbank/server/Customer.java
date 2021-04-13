@@ -1,5 +1,6 @@
 package newbank.server;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -12,6 +13,11 @@ public class Customer {
     private String password;
 	private String memorableWord;
 	private static List<Customer> allCustomers;
+
+	private final ArrayList<Loan> activeLenderLoan = new ArrayList<>();
+	private final ArrayList<Loan> activeBorrowerLoan = new ArrayList<>();
+	private final ArrayList<Loan> finishedLenderLoan = new ArrayList<>();
+	private final ArrayList<Loan> finishedBorrowerLoan = new ArrayList<>();
 
 	public Customer(String accountName, String password, String memorableWord) {
 		this.customerName = accountName;
@@ -129,4 +135,53 @@ public class Customer {
 		}
 	}
 
+	//FUNCTIONS TO DEAL WITH ACTIVE-COMPLETED LOANS
+
+	//get - add - remove active loans (as lender)
+	public ArrayList getActiveLenderLoan(){
+		return activeLenderLoan;
+	}
+	public void addActiveLenderLoan(Loan loan){
+		activeLenderLoan.add(loan);
+	}
+	public void removeActiveLenderLoan(Loan loan){
+		activeLenderLoan.remove(loan);
+	}
+
+	//get - add - remove active loans (as borrower)
+	public ArrayList getActiveBorrowerLoan(){
+		return activeBorrowerLoan;
+	}
+	public void addActiveBorrowerLoan(Loan loan){
+		activeBorrowerLoan.add(loan);
+	}
+	public void removeActiveBorrowerLoan(Loan loan){
+		activeBorrowerLoan.remove(loan);
+	}
+
+	//get - add - remove completed loans (as lender)
+	public ArrayList getFinishedLenderLoan(){
+		return finishedLenderLoan;
+	}
+	public void addFinishedLenderLoan(Loan loan){
+		finishedLenderLoan.add(loan);
+	}
+	public void removeFinishedLenderLoan(Loan loan){
+		finishedLenderLoan.remove(loan);
+	}
+
+	//get - add - remove completed loans (as borrower)
+	public ArrayList getFinishedBorrowerLoan(){
+		return finishedBorrowerLoan;
+	}
+	public void addFinishedBorrowerLoan(Loan loan){
+		finishedBorrowerLoan.add(loan);
+	}
+	public void removeFinishedBorrowerLoan(Loan loan){
+		finishedBorrowerLoan.remove(loan);
+	}
+
 }
+
+
+

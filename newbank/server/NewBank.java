@@ -2,23 +2,27 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
-	private HashMap<String,Customer> customers;
+	private HashMap<String, Customer> customers;
 	private BufferedReader in;
 	private PrintWriter out;
 	private List<LoanOffer> loanOffers = new ArrayList<>();
 	private List<LoanRequest> loanRequests = new ArrayList<>();
 
-	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
+	private ArrayList<Loan> activeLoans = new ArrayList<>();
+	private ArrayList<Loan> completedLoans = new ArrayList<>();
 
-	public final ArrayList<Loan> activeLoans = new ArrayList<>();
-	public final ArrayList<Loan> completedLoans = new ArrayList<>();
+	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
 	private NewBank() {
 		customers = new HashMap<>();
@@ -26,15 +30,15 @@ public class NewBank {
 	}
 	
 	private void addTestData() {
-		Customer bhagy = new Customer("bhagy","123", "coffee");
+		Customer bhagy = new Customer("bhagy", "123", "coffee");
 		bhagy.addAccount(new Account("Main", 1000.0));
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer("christina","456", "zigzag");
-		christina.addAccount(new Account("Savings" ,1500.0));
+		Customer christina = new Customer("christina", "456", "zigzag");
+		christina.addAccount(new Account("Savings", 1500.0));
 		customers.put("christina", christina);
 
-		Customer john = new Customer("john","789", "jojoba");
+		Customer john = new Customer("john", "789", "jojoba");
 		john.addAccount(new Account("Checking", 250.0));
 		customers.put("john", john);
 	}
@@ -86,52 +90,53 @@ public class NewBank {
 				double openingBalance = 0;
 				return newAccount(getCustomerByID(customer), accountName, openingBalance, accountType) + showMyAccounts(customer);
 			} else if (request.equals("4")) {
-					double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
-					String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
-					String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
-					return move(customer, amount, payerAccount, payeeAccount);
-			} else if(request.equals("5")) {
+				double amount = Double.parseDouble(menuResponseBuilder("Please enter an amount"));
+				String payerAccount = menuResponseBuilder("Please enter the name of the paying account");
+				String payeeAccount = menuResponseBuilder("Please enter the name of the receiving account");
+				return move(customer, amount, payerAccount, payeeAccount);
+			} else if (request.equals("5")) {
 				String amount = menuResponseBuilder("Please specify an amount");
 				String payerName = menuResponseBuilder("Please specify a paying account");
 				String sortCode = menuResponseBuilder(("Please specify a sort code"));
 				String payerAccountNumber = menuResponseBuilder(("Please specify a paying account number"));
 				String receiverAccountNumber = menuResponseBuilder(("Please specify a receiving account number"));
 				return pay(customer, amount, payerName, sortCode, payerAccountNumber, receiverAccountNumber);
-			}  else if (request.equals("6")){
-			String currentPassword = menuResponseBuilder("Enter your existing password.");
-			if(customers.get(customer.getKey()).getPassword().equals(currentPassword)){
-				boolean validPassword = false;
-				while (!validPassword) {
-					String newPassword = menuResponseBuilder("Please enter your new password.\n" +
-							"							Password must contain at least one digit [0-9].\n" +
-							"                             at least one lowercase Latin character [a-z].\n" +
-							"                             at least one uppercase Latin character [A-Z].\n" +
-							"                             at least one special character like ! @ # & ( ).\n" +
-							"                             a length of at least 8 characters and a maximum of 20 characters.");
+			} else if (request.equals("6")) {
+				String currentPassword = menuResponseBuilder("Enter your existing password.");
+				if (customers.get(customer.getKey()).getPassword().equals(currentPassword)) {
+					boolean validPassword = false;
+					while (!validPassword) {
+						String newPassword = menuResponseBuilder("Please enter your new password.\n" +
+								"							Password must contain at least one digit [0-9].\n" +
+								"                             at least one lowercase Latin character [a-z].\n" +
+								"                             at least one uppercase Latin character [A-Z].\n" +
+								"                             at least one special character like ! @ # & ( ).\n" +
+								"                             a length of at least 8 characters and a maximum of 20 characters.");
 
-					if (Customer.isValid(newPassword)) {
-						validPassword = true;
-						customers.get(customer.getKey()).setPassword(newPassword);
-					} else{
-						out.println("Password is too weak. Try something else.");
+						if (Customer.isValid(newPassword)) {
+							validPassword = true;
+							customers.get(customer.getKey()).setPassword(newPassword);
+						} else {
+							out.println("Password is too weak. Try something else.");
+						}
 					}
+					return "Password has been successfully changed.";
 				}
-				return "Password has been successfully changed.";
-			} return "Wrong password. Returned to main menu.";
-		} else if (request.equals("7")) {
-			String accountName = menuResponseBuilder("Please specify the name of the account you want to delete");
-			accountName=accountName.toLowerCase();
-			if (customers.get(customer.getKey()).closeAccount(accountName)){
-				return "Success! Account deleted.";
-			} else{
-				return "Account name does not exist. Returned to menu.";
-			}
-		} else if (request.equals("loans")) {
+				return "Wrong password. Returned to main menu.";
+			} else if (request.equals("7")) {
+				String accountName = menuResponseBuilder("Please specify the name of the account you want to delete");
+				accountName = accountName.toLowerCase();
+				if (customers.get(customer.getKey()).closeAccount(accountName)) {
+					return "Success! Account deleted.";
+				} else {
+					return "Account name does not exist. Returned to menu.";
+				}
+			} else if (request.equals("loans")) {
 				String loanType = menuResponseBuilder("Would you like view loan OFFERS or REQUESTS?");
-				loanType=loanType.toLowerCase();
-				if (loanType.equals("offers")){
+				loanType = loanType.toLowerCase();
+				if (loanType.equals("offers")) {
 					return "TODO: SHOW THE LOAN OFFERS";
-				} else if (loanType.equals("requests")){
+				} else if (loanType.equals("requests")) {
 					return "TODO: SHOW THE LOAN REQUESTS";
 				} else {
 					return "Please enter OFFER or REQUEST";
@@ -298,14 +303,11 @@ public class NewBank {
 				payerAccount.addTransaction(t);
 				payeeAccount.addDeposit(d);
 				return "Funds successfully transferred.";
-			}
-			else {
+			} else {
 				return "Insufficient funds";
 			}
 
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			return "Unable to find account.";
 		}
 	}
@@ -325,8 +327,8 @@ public class NewBank {
 					"                             a length of at least 8 characters and a maximum of 20 characters.");
 
 			if (Customer.isValid(accountPassword)) {
-                validPassword = true;
-			} else{
+				validPassword = true;
+			} else {
 				out.println("Password is too weak. Try something else.");
 			}
 
@@ -348,8 +350,11 @@ public class NewBank {
 		newAccount(newCustomer, "Main", 5.00, "main");
 		customers.put(customerName, newCustomer);
 		//add logic to NewBankClient handler so that a user can either login or register as a new customer
-		if (customers.containsKey(customerName)){return true;}
-		else { return false;}
+		if (customers.containsKey(customerName)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	//convert CustomerID object to Customer object
@@ -398,6 +403,7 @@ public class NewBank {
 		globalTransactions.add(t);
 
 	}
+
 	public void updatePassword(String username, String password) {
 		Customer customer = customers.get(username);
 		customer.setPassword(password);
@@ -415,13 +421,13 @@ public class NewBank {
 
 	//add a loan offer to the list of loan offers
 	public void addLoanOffer(CustomerID lenderID, long offeredLoanAmount,
-								Date offeredMaturityDate, int offeredInterestRate) {
+							 Date offeredMaturityDate, int offeredInterestRate) {
 		loanOffers.add(new LoanOffer(lenderID, offeredLoanAmount, offeredMaturityDate, offeredInterestRate));
 	}
 
 	//add a loan request to the list of loan requests
 	public void addLoanRequest(CustomerID borrowerID, long loanRequestAmount,
-							 Date requestedMaturityDate, int requestedInterestRate) {
+								 Date requestedMaturityDate, int requestedInterestRate) {
 		loanRequests.add(new LoanRequest(borrowerID, loanRequestAmount, requestedMaturityDate, requestedInterestRate));
 	}
 
@@ -499,6 +505,42 @@ public class NewBank {
 			return true;
 		}
 		return false;
+	}
+
+	//get - add - remove active loans (unpaid)
+	public ArrayList getActiveLoan(){
+		return activeLoans;
+	}
+	public void addActiveLoan(Loan loan){
+		activeLoans.add(loan);
+	}
+	public void removeActiveLoan(Loan loan){
+		activeLoans.remove(loan);
+	}
+
+	//get - add - remove completed loans (paid)
+	public ArrayList getCompletedLoan(){
+		return completedLoans;
+	}
+	public void addCompletedLoan(Loan loan){
+		completedLoans.add(loan);
+	}
+	public void removeCompletedLoan(Loan loan){
+		completedLoans.remove(loan);
+	}
+
+	//display lists of loans - active and paid
+	public void displayAllLoans(){
+		String a = "";
+		String p = "";
+		for(Loan activeL : activeLoans){
+			a = activeL.toString();
+			System.out.println("List of currently active loans. \n" + a);
+		}
+		for(Loan paidL : completedLoans){
+			p = paidL.toString();
+			System.out.println("List of currently paid loans. \n" + p);
+		}
 	}
 
 }

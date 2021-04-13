@@ -2,7 +2,6 @@ package newbank.server;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +20,7 @@ public class Account {
 
 	private ArrayList<Transaction> accountTransactions = new ArrayList<>();
 	private ArrayList<Deposit> accountDeposits = new ArrayList<>();
-	private ArrayList<DirectDebit> DirectDebitList = new ArrayList<>();
+	private ArrayList<DirectDebit> directDebitList = new ArrayList<>();
 
 	private final ArrayList<Loan> activeBorrowerLoan = new ArrayList<>();
 	private final ArrayList<Loan> activeLenderLoan = new ArrayList<>();
@@ -106,21 +105,9 @@ public class Account {
 		accountDeposits.add(d);
 	}
 
-
-	//track active loans
-	public String trackActiveLoans(CustomerID lenderID, CustomerID borrowerID, double loanAmount, LocalDate startDate, LocalDate endDate,
-								   String paymentFrequency, int repaymentAmount, int loanMonths, double interestRate, double outstandingAmount){
-
-		activeLenderLoan.add(new Loan(lenderID, borrowerID, loanAmount, startDate, endDate, paymentFrequency,
-										repaymentAmount, loanMonths, interestRate, outstandingAmount));
-		if(activeBorrowerLoan.size()<3){
-			activeBorrowerLoan.add(new Loan(lenderID, borrowerID, loanAmount, startDate, endDate, paymentFrequency,
-											repaymentAmount, loanMonths, interestRate, outstandingAmount));
-			return "Loan successfully added. \n" + (activeBorrowerLoan);
-		} else {
-			return "Loan successfully added. \n" + (activeBorrowerLoan);
-//			hello
-		}
-
+	public ArrayList<DirectDebit> getDirectDebitList() {
+		return directDebitList;
 	}
+
+
 }

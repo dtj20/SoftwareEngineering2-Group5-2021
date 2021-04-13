@@ -2,6 +2,8 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -543,4 +545,79 @@ public class NewBank {
 		}
 	}
 
+	public Loan acceptLoanOffer(LoanOffer loanOffer, CustomerID borrowerID, String paymentFreq, int repaymentAmount){
+		Date startDate=new Date();
+		Date endDate = loanOffer.getOfferedMaturityDate();
+		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
+
+		Loan loan = new Loan(loanOffer.getOfferedLoanAmount(), startDate, loanOffer.getOfferedMaturityDate(), paymentFreq,
+				repaymentAmount, loanMonths, loanOffer.getOfferedInterestRate(), loanOffer.getLenderID(), borrowerID);
+//TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
+
+//remove loan offer
+		if (removeLoanOffer(loanOffer.getLoanOfferId())) {
+			return loan;
+		}
+		return null;
+	}
+
+	public Loan acceptLoanRequest(LoanRequest loanRequest, CustomerID lenderID, String paymentFreq, int repaymentAmount){
+		Date startDate=new Date();
+		Date endDate = loanRequest.getRequestedMaturityDate();
+		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
+
+		Loan loan = new Loan(loanRequest.getLoanRequestAmount(), startDate, loanRequest.getRequestedMaturityDate(), paymentFreq,
+				repaymentAmount, loanMonths, loanRequest.getRequestedInterestRate(), loanRequest.getBorrowerID(), lenderID);
+		//TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
+
+//remove loan request
+		if (removeLoanRequest(loanRequest.getLoanRequestId())) {
+			return loan;
+		}
+		return null;
+	}
+
+	public LoanRequest findLoanRequest(int loanRequestID) {
+		for (LoanRequest loanRequest : loanRequests) {
+			if (loanRequest.getLoanRequestId()==loanRequestID) {
+				return loanRequest;
+			}
+		}
+		return null;
+	}
+
+	public LoanOffer findLoanOffer(int loanOfferID) {
+		for (LoanOffer loanOffer : loanOffers) {
+			if (loanOffer.getLoanOfferId()==loanOfferID) {
+				return loanOffer;
+			}
+		}
+		return null;
+	}
+
+		public boolean removeLoanOffer(int loanOfferID) {
+			LoanOffer loan = findLoanOffer(loanOfferID);
+			if(loan!=null){
+				int index = loanOffers.indexOf(loan);
+				loanOffers.remove(index);
+				return true;
+			}
+			return false;
+		}
+
+	public boolean removeLoanRequest(int loanOfferID) {
+		LoanRequest loan = findLoanRequest(loanOfferID);
+		if(loan!=null){
+			int index = loanRequests.indexOf(loan);
+			loanRequests.remove(index);
+			return true;
+		}
+		return false;
+	}
+
+	public void createDirectDebit(Customer payer, Customer receiver, double amount, String paymentFrequency) {
+		String receiverName = receiver.toString();
+		DirectDebit dd = new DirectDebit(receiverName, amount, paymentFrequency);
+		payer.findAccount("Main").getDirectDebitList().add(dd);
+	}
 }

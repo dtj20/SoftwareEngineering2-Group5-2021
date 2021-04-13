@@ -139,4 +139,14 @@ public class Loan {
     public void setInterestRate(double interestRate) {
         this.interestRate = interestRate;
     }
+
+    public String getLoanSummary() {
+        String summary = "Loan ID: " + getLoanID() + "\n" +
+                "Loan Amount: " + getLoanAmount() + "\n" +
+                "Loan End Date: " + getEndDate() + "\n" +
+                "Payments Remaining: " + getPaymentsRemaining() + "\n" +
+                "Payments Frequency: " + getPaymentFrequency() + "\n";
+        return summary;
+
+    }
 }

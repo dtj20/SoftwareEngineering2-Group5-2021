@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.util.Date;
+import java.util.Random;
 
 public class LoanOffer {
 
@@ -10,14 +11,22 @@ public class LoanOffer {
     private Date offeredMaturityDate;
     private int offeredInterestRate;
     private String paymentFrequency;
-    private int loanOfferId = 0;
+    private int loanOfferId;
 
     public LoanOffer(CustomerID lenderID, long offeredLoanAmount, Date offeredMaturityDate, int offeredInterestRate) {
         this.lenderID = lenderID;
         this.offeredLoanAmount = offeredLoanAmount;
         this.offeredMaturityDate = offeredMaturityDate;
         this.offeredInterestRate = offeredInterestRate;
-        this.loanOfferId = loanOfferId++;
+        this.loanOfferId = makeOfferID();
+    }
+
+    public int makeOfferID() {
+        Random r = new Random();
+        int x = r.nextInt(1000);
+        int y = r.nextInt(1000);
+        String id = x + "" + offeredInterestRate + "" + y;
+        return Integer.parseInt(id);
     }
 
     public String getPaymentFrequency() {

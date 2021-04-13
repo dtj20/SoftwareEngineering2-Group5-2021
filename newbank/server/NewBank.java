@@ -2,7 +2,6 @@ package newbank.server;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,57 +132,11 @@ public class NewBank {
 				} else {
 					return "Account name does not exist. Returned to menu.";
 				}
-			} else if (request.equals("loans")) {
-				String loanType = menuResponseBuilder("Would you like view loan OFFERS or REQUESTS?");
-				loanType = loanType.toLowerCase();
-				if (loanType.equals("offers")) {
-					return "TODO: SHOW THE LOAN OFFERS";
-				} else if (loanType.equals("requests")) {
-					return "TODO: SHOW THE LOAN REQUESTS";
-				} else {
-					return "Please enter OFFER or REQUEST";
-				}
-			} 	else if (request.equals("apply")) {
-				String loanRequestAmount = menuResponseBuilder("Please enter your desired loan amount:");
-				String requestedMaturityDate = menuResponseBuilder("Please enter your desired final repayment date -> dd/MM/yyyy");
-
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				Date rmd = sdf.parse(requestedMaturityDate);
-				int interestRate = 75/1000;
-
-				if(checkEligibility(customers.get(customer.getKey()))) {
-					loanRequests.add(new LoanRequest(customer, Long.parseLong(loanRequestAmount), rmd, interestRate));
-					return "Your loan request has been successfully created.";
-				}
-				else {
-					return "You are not eligible for a loan at this time.";
-				}
+			} else if (request.equals("8")) {
+				loanMarketplace(customer);
+			} else {
+				return "Invalid Response. please choose from the menu";
 			}
-			else if (request.equals("offer")) {
-				String loanRequestAmount = menuResponseBuilder("Please enter your desired loan amount:");
-				String requestedMaturityDate = menuResponseBuilder("Please enter your desired final repayment date -> dd/MM/yyyy");
-				String interestRate = menuResponseBuilder("Please enter your choice of interest rate -> 5 or 10:");
-				int intRate;
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				Date rmd = sdf.parse(requestedMaturityDate);
-
-				if(checkEligibility(customers.get(customer.getKey()), Double.parseDouble(loanRequestAmount))) {
-					if (interestRate.equals("5")){
-						intRate = 5/100;
-					} else {
-						intRate = 10/100;
-					}
-					loanOffers.add(new LoanOffer(customer, Long.parseLong(loanRequestAmount), rmd, intRate));
-					return "Your loan offer has been successfully created.";
-				}
-				else {
-					return "You are not eligible for a loan at this time.";
-				}
-			}
-
-			else {
-			return "Invalid Response. please choose from the menu";
-		}
 
 
 	}
@@ -490,15 +443,12 @@ public class NewBank {
 	}
 
 	public boolean noActiveLoans(Customer customer) {
-		/*
+
 		if(customer.getActiveBorrowerLoan().size() == 0){
 			return true;
 		} else {
 			return false;
 		}
-		*/
-		// After Sara has done her part
-		return false;
 	}
 
 	public boolean atLeast3MonthlyDeposits(Account acc) {
@@ -561,20 +511,22 @@ public class NewBank {
 		return null;
 	}
 
-	public Loan acceptLoanRequest(LoanRequest loanRequest, CustomerID lenderID, String paymentFreq, int repaymentAmount){
+	public void acceptLoanRequest(LoanRequest loanRequest, CustomerID lenderID, String paymentFreq, int repaymentAmount){
 		Date startDate=new Date();
 		Date endDate = loanRequest.getRequestedMaturityDate();
 		int loanMonths = Math.toIntExact(ChronoUnit.MONTHS.between(startDate.toInstant(), endDate.toInstant()));
 
 		Loan loan = new Loan(loanRequest.getLoanRequestAmount(), loanRequest.getRequestedMaturityDate(), paymentFreq,
 				repaymentAmount, loanMonths, loanRequest.getRequestedInterestRate(), loanRequest.getBorrowerID(), lenderID);
-		//TO DO: Add loan to lender, borrower and newbank lists!!!!!!!!!!!!!!!!!!!
 
-//remove loan request
+
 		if (removeLoanRequest(loanRequest.getLoanRequestId())) {
-			return loan;
+			addActiveLoan(loan);
+			Customer lender = getCustomerByID(lenderID);
+			lender.addActiveLenderLoan(loan);
+			Customer borrower = getCustomerByID(loanRequest.getBorrowerID());
+			borrower.addActiveBorrowerLoan(loan);
 		}
-		return null;
 	}
 
 	public LoanRequest findLoanRequest(int loanRequestID) {
@@ -619,5 +571,150 @@ public class NewBank {
 		String receiverName = receiver.toString();
 		DirectDebit dd = new DirectDebit(receiverName, amount, paymentFrequency);
 		payer.findAccount("Main").getDirectDebitList().add(dd);
+	}
+
+	public void loanMarketplace(CustomerID cId) {
+		String option = menuResponseBuilder("1: View the Loan Offers \n2: View the Loan requests \n3: Create a Loan Request \n4: Create a Loan Offer \n5: View your current Loans");
+		if (option.equals("1")) {
+			viewLoanOffers(cId);
+		} else if (option.equals("2")) {
+			viewLoanRequests(cId);
+		} else if (option.equals("3")) {
+			try {
+				createLoanRequest(cId);
+			}catch(ParseException e) {
+				out.println("incorrect date format entered");
+			}
+		} else if (option.equals("4")) {
+			try {
+				createLoanOffer(cId);
+			} catch(ParseException e) {
+				out.println("incorrect date format entered");
+			}
+		} else if (option.equals("5")) {
+			viewCurrentLoans(cId);
+		}
+	}
+
+	public void viewLoanOffers(CustomerID cID) {
+		List<LoanOffer> loanoffers = getLoanOffers();
+		boolean loop = true;
+		for (LoanOffer lo : loanoffers) {
+			if(loop) {
+				out.println(lo.toString());
+				out.println("------------");
+				String cont = menuResponseBuilder("press 1 to accept the offer, 2 to stop viewing or any other key to continue");
+				if (cont.equals("1")) {
+					loop = false;
+					String paymentFreq = menuResponseBuilder("Please enter a number between 1 & 4 for the " +
+							"number of payments to be made in a month");
+					String repaymentAmount = menuResponseBuilder("Please enter the repayment amount");
+					int ra = Integer.parseInt(repaymentAmount);
+
+					acceptLoanOffer(lo, cID, paymentFreq, ra);
+				}
+				else if(cont.equals("2")) {
+					loop = false;
+				}
+			}
+		}
+	}
+
+	public void viewLoanRequests(CustomerID cID) {
+		List<LoanRequest> loanrequests = getLoanRequests();
+		boolean loop = true;
+		for (LoanRequest lr : loanrequests) {
+			if(loop) {
+				out.println(lr.toString());
+				out.println("------------");
+				String cont = menuResponseBuilder("press 1 to accept the request, 2 to stop viewing or any other key to continue");
+				if(cont.equals("1")) {
+					loop = false;
+					String paymentFreq = menuResponseBuilder("Please enter a number between 1 & 4 for the " +
+							"number of payments to be made in a month");
+					String repaymentAmount = menuResponseBuilder("Please enter the repayment amount");
+					int ra = Integer.parseInt(repaymentAmount);
+
+					acceptLoanRequest(lr, cID, paymentFreq, ra);
+				} else if (cont.equals("2")) {
+					loop = false;
+				}
+			}
+		}
+	}
+
+	public void createLoanRequest(CustomerID cID) throws ParseException {
+		Customer cust = getCustomerByID(cID);
+		long loanAmount = Long.parseLong(menuResponseBuilder("Please enter a loan amount"));
+		if(checkEligibility(cust)) {
+			boolean loop = true;
+			int intRate = 3;
+			while (loop) {
+				intRate = Integer.parseInt(menuResponseBuilder("please enter an interest rate between 3 and 10"));
+				if (intRate >= 3 && intRate <= 10) {
+					loop = false;
+				}
+			}
+			String date = menuResponseBuilder("Please enter a loan end date in the following format dd/mm/yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date matDate = sdf.parse(date);
+			addLoanRequest(cID, loanAmount, matDate, intRate);
+		} else {
+			out.println("Sorry, you are not able to offer a loan at this time.");
+		}
+	}
+
+	public void createLoanOffer(CustomerID cID) throws ParseException {
+		long loanAmount = Long.parseLong(menuResponseBuilder("Please enter a loan amount"));
+		Customer cust = getCustomerByID(cID);
+		if(checkEligibility(cust, loanAmount)) {
+			boolean loop = true;
+			int intRate = 3;
+			while (loop) {
+				intRate = Integer.parseInt(menuResponseBuilder("please enter an interest rate between 3 and 10"));
+				if (intRate >= 3 && intRate <= 10) {
+					loop = false;
+				}
+			}
+			String date = menuResponseBuilder("Please enter a loan end date in the following format dd/mm/yyyy");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date matDate = sdf.parse(date);
+			for(Account acc : cust.getAccounts()) {
+				if (acc.getName().equals("Main")) {
+					acc.removeFunds(loanAmount);
+				}
+			}
+			addLoanOffer(cID, loanAmount, matDate, intRate);
+		} else {
+			out.println("Sorry, you are not able to offer a loan at this time.");
+		}
+	}
+
+	public void viewCurrentLoans(CustomerID	cID) {
+		Customer cust = getCustomerByID(cID);
+		ArrayList<Loan> activeLenderLoan = cust.getActiveLenderLoan();
+		ArrayList<Loan> activeBorrowerLoan = cust.getActiveBorrowerLoan();
+
+		for(Loan l : activeLenderLoan) {
+			out.println("Current Active Lender Loan");
+			out.println(l.getLoanSummary());
+		}
+		for(Loan l : activeBorrowerLoan) {
+			out.println("Current Active Borrower Loan");
+			out.println(l.getLoanSummary());
+		}
+		String option = menuResponseBuilder("Would you like to view completed loans? Y/N");
+		if(option.equals("Y")) {
+			ArrayList<Loan> finishedLenderLoan = cust.getFinishedLenderLoan();
+			ArrayList<Loan> finishedBorrowerLoan = cust.getFinishedBorrowerLoan();
+			for(Loan l : finishedLenderLoan) {
+				out.println("Completed Lender Loan");
+				out.println(l.getLoanSummary());
+			}
+			for(Loan l : finishedBorrowerLoan) {
+				out.println("Completed Borrower Loan");
+				out.println(l.getLoanSummary());
+			}
+		}
 	}
 }

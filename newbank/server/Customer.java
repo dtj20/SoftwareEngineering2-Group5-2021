@@ -154,6 +154,12 @@ public class Customer {
 	}
 	public void addActiveBorrowerLoan(Loan loan){
 		activeBorrowerLoan.add(loan);
+		double loanAmount = loan.getLoanAmount();
+		for (Account acc :accounts) {
+			if (acc.getName() == "Main") {
+				acc.addFunds(loanAmount);
+			}
+		}
 	}
 	public void removeActiveBorrowerLoan(Loan loan){
 		activeBorrowerLoan.remove(loan);

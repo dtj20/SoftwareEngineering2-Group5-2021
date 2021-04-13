@@ -17,6 +17,9 @@ public class NewBank {
 
 	private ArrayList<Transaction> globalTransactions = new ArrayList<>();
 
+	public final ArrayList<Loan> activeLoans = new ArrayList<>();
+	public final ArrayList<Loan> completedLoans = new ArrayList<>();
+
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();

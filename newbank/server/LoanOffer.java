@@ -9,6 +9,7 @@ public class LoanOffer {
     private long offeredLoanAmount;
     private Date offeredMaturityDate;
     private int offeredInterestRate;
+    private String paymentFrequency;
     private int loanOfferId = 0;
 
     public LoanOffer(CustomerID lenderID, long offeredLoanAmount, Date offeredMaturityDate, int offeredInterestRate) {
@@ -17,6 +18,14 @@ public class LoanOffer {
         this.offeredMaturityDate = offeredMaturityDate;
         this.offeredInterestRate = offeredInterestRate;
         this.loanOfferId = loanOfferId++;
+    }
+
+    public String getPaymentFrequency() {
+        return paymentFrequency;
+    }
+
+    public void setPaymentFrequency(String paymentFrequency) {
+        this.paymentFrequency = paymentFrequency;
     }
 
     public CustomerID getLenderID() {

@@ -4,11 +4,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class NewBank {
 	
@@ -143,7 +139,6 @@ public class NewBank {
 
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				Date rmd = sdf.parse(requestedMaturityDate);
-
 				int interestRate = 75/1000;
 
 				if(checkEligibility(customers.get(customer.getKey()))) {
@@ -444,13 +439,12 @@ public class NewBank {
 		}
 		return s;
 	}
-
+	//		LocalDateTime now = LocalDateTime.now();
 	public boolean checkEligibility(Customer customer) throws ParseException {
-		Account acc = customer.findAccount("Main");
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		Account acc = customer.findAccount("main");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String startDate = acc.getCreated();
-		LocalDateTime now = LocalDateTime.now();
+		Date now = Calendar.getInstance().getTime();
 		String endDate = sdf.format(now);
 
 		if(atLeast3Months(startDate, endDate) && noActiveLoans(customer) && atLeast3MonthlyDeposits(acc)){
@@ -461,7 +455,7 @@ public class NewBank {
 	}
 
 	public boolean checkEligibility(Customer customer, double amount) throws ParseException {
-		Account acc = customer.findAccount("Main");
+		Account acc = customer.findAccount("main");
 		if(acc.getBalance() >= amount){
 			return checkEligibility(customer);
 		} else {
@@ -470,7 +464,7 @@ public class NewBank {
 	}
 
 	public boolean atLeast3Months(String startDate, String endDate) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 		Date d1 = sdf.parse(startDate);
 		Date d2 = sdf.parse(endDate);
